@@ -1,0 +1,2676 @@
+1.char类型
+=====================================================================================================================================================
+public class DataTypeTest01
+{
+	public static void main(String[] args){
+	
+		char c = 'a';
+		System.out.println(c);
+
+		//下面 \n 表示一个字符 不属于 字符串，这是一个 “换行符”，属于char类型的数据
+		//反斜杠在java语言当中具有转义功能
+		char x = '\n';
+
+		//在控制台输出一个“反斜杠字符”
+		//第一个反斜杠具有转义功能，将后面的反斜杠转义为普通的反斜杠字符。
+		//结论：在java语言当中两反斜杠代表一个普通的反斜杠字符。
+		char k = '\\';
+		System.out.println(k);
+	
+		//在控制台上输出一个单引号字符
+		//反斜杠具有转义功能，将第二个单引号转义成普通单引号，不会与第一个单引号配对
+		//第一个单引号与最后一个单引号配对
+		char a = '\'';
+		System.out.println(a);
+
+		//同理 在控制台上输出一个"HelloWorld!"
+		System.out.println("\"HelloWorld\"");
+
+		//JDK中自带的 native2ascii命令，可以将文字转换成unicode编码形式
+		/*  怎么使用这个命令：
+		    在命令行中输入native2ascii，回车，然后输入文字之后回车即可得到unicode编码
+		 */
+
+		//'中'对应的unicode编码是4e2d 前面的\u 表示： \是转义符 u是unicode，\u表示将后面的 4e2d 转换为unicode编码
+		char n = '\u4e2d';
+
+		//char默认值也可以表示为
+		char c = '\u0000';
+		System.out.println(c);
+	}
+}
+
+=====================================================================================================================================================
+
+转义符：\ 【转义字符出现在特殊字符之前，会将特殊字符转换为普通字符】
+	\n 换行符
+	\t 制表符
+	\' 普通的单引号
+	\\ 普通的反斜杠
+	\" 普通的双引号
+
+2.java语言中的整数型：
+	byte,short,int,long
+
+	数据类型	占用空间大小		默认值		取值范围
+--------------------------------------------------------------------------------------------
+	byte		1			0		[-128 ~ 127]
+	short		2			0		[-32768 ~ 32767]
+	int		4			0		[-2147483648 ~ 2147483647]
+	long		8			0L
+
+  *java语言中的"整数型字面值"被默认当作int类型来处理。要让这个"整数型字面值"被当做long类型来处理的话，需要在"整数字面值"后面添加l/L,建议都用L
+
+  * java语言当中的整数型字面值有三种表示方式：
+	第一种：十进制【是一种缺省默认的方式】
+	第二种：八进制【在编写八进制整数型字面值的时候需要以0开始】
+	第三种：十六进制【在编写十六进制整数型字面值时候需要以0x开始】
+
+=====================================================================================================================================================
+
+public class DataTypeTest04
+
+{
+	public static void main(String[] args){
+
+		int a = 10;
+		int b = 010;
+		int c = 0x10;
+
+		System.out.println(a); //10
+		System.out.println(b); //8
+		System.out.println(c); //16
+		System.out.println(a + b + c); //34
+
+		//123这个整数型字面值是int类型
+		//i变量声明的时候也是int类型
+		//int类型的123赋值给int类型的变量i，不存在类型转换
+		int i = 123;
+		System.out.println(i);
+
+		//456整数型字面值是int类型，占用4个字节
+		//x变量在声明的时候是long类型，占用8个字节
+		//int类型的字面值456赋值给long类型的变量x，存在类型转换
+		//int类型转换为long类型，是小容量转换为大容量
+		//小容量转换为大容量可以自动转换，称为自动转换机制。
+		long x = 456;
+		System.out.println(x);
+
+		//2147483647字面值是int类型，占用4个字节
+		//y是long类型，占用8个字节，自动类型转换
+		long y = 2147483647;
+		System.out.println(y);
+	
+		//编译错误：过大的整数：2147483648
+		//2147483648被当作int类型4个字节处理，但是这个字面值超出int类型范围
+		long z = 2147483648;
+
+		//解决错误
+		//2147483648字面值一上来就当做long类型来处理，在字面值后添加L
+		//2147483648L是8个字节的long类型
+		//z是long类型变量，以下程序不存在类型转换
+		long z = 2147483648L;
+		System.out.println(z);
+	}
+}
+
+=====================================================================================================================================================
+
+public class DataTypeTest05
+{
+	public static void main(String[] args){
+	
+		//100L是long类型字面值
+		//x是long类型变量
+		//不存在泪下的转换，直接赋值
+		long x = 100L;
+
+		//x变量是long类型，8个字节
+		//y变量是int类型，4个字节
+		//以下程序可以编译通过吗？
+		/编译报错，大容量不能直接赋值给小容量
+		//int y = x;
+
+		//大容量转换成小容量，需要进行强制类型转换
+		//强制类型转换需要加"强制类型转换符"
+		//加上强制类型转换符之后编译通过了，但是可能会损失精度。
+		//所以强制类型转换谨慎使用，因为损失精度之后可能损失严重
+
+		//强转原理
+			//原始数据：00000000 00000000 00000000 00000000 00000000 00000000 00000000 01100100
+			//强转之后的数据：00000000 00000000 00000000 01100100
+			//将左边的二进制砍掉【所以的数据强转的时候都是这样完成的】
+		int y = (int)x;
+		System.out.println(y);
+		
+		//原始数据：00000000 00000000 00000000 00000000 10000000 00000000 00000000 00000000
+		//强转之后的数据：10000000 00000000 00000000 00000000  【目前存储在计算机内部，计算机存储数据都是采用补码的形式存储】
+		//所以10000000 00000000 00000000 00000000现在是以一个补码形式
+		//将以上补码转换成原码就是最终结果
+		long k = 2147483648L;
+		int e = (int)k;
+		System.out.println(e); //损失精度严重，结果是负数  【-2147483648】
+
+		//分析以下程序是否可以编译通过？
+		//依据目前所学内容，以下程序是无法编译通过
+		//理由：50是int类型的字面值，b是byte类型的变量，显然是大容量转换成小容量
+		//但是，在实际编译的时候，以下代码编译通过了，这说明：在Java语言当中，当一个整型字面值没有超出byte类型取值范围的话，该字面值可以直接赋值给byte类型的变量。
+		byte b = 50; //可以
+
+		byte c = 127; //可以
+
+		//编译报错，128这个int类型字面值已经超出了byte类型的取值范围，不能直接赋值给byte类型的变量
+		//byte b1 =128;
+
+		//纠正错误，需要使用强制类型转换符
+		//但是一点会损失精度
+		//原始数据：00000000 00000000 00000000 10000000
+		//强转后的数据：10000000【计算机存储数据都是采用补码的形式存储】
+		byte b1 = (byte)128; //结果为-128
+		System.out.println(b1);	
+	
+		/*
+		   补码: 10000000
+		   原码计算过程:
+			* 10000000 -1 --> 01111111
+			* 10000000 --> 128
+			* -128
+		*/
+
+		//原始数据: 00000000 00000000 00000000 110001110
+		//强制类型转换之后: 11000110
+		//11000110现在在计算机当中储存,它是一个补码,将补码转换成原码就是数字:
+		//11000110 - 1 --> 11000101 --> 00111010 -->58 【补码转换会原码：减1在取反，包括符号位也取反】
+		//-58
+		byte m = (byte)198;
+		System.out.println(m); //-58
+
+		short s = 31767;  //通过
+		short s1 = 32768;  //编译报错
+
+		//65535是int类型，4个字节
+		//cc是char类型，2个字节
+		//按照以前所学知识来说，以下编译报错。
+		char cc = 65535; //通过
+		cc =65535; //编译报错
+
+		/*
+		    当一个整数字面值没有超出byte，short，char的取值范围，这个字面值
+		    可以直接赋值给byte，short，char类型的变量，这种机制SUN公司允许了
+		    目的是为了方便程序员的编程。
+		*/
+
+===========================================================================================================================
+
+ *浮点型
+	
+		float 单精度【4个字节】
+		double 双精度【8个字节，精度较高】
+
+	double的精度太低【相对来说】，不适合做财务软件。财务涉及到钱的问题，要求精度较高，
+	所以SUN在基础SE雷库当中为程序员准备了精度跟高的类，只不过这种类型是一种引用数据类
+	型，不属于基本数据类型，它是：java.math.BigDecimal
+	
+	在java语言当中，所有的浮点型字面值【3.0】，默认被当做double类型来处理。
+	要想该字面值当做float类型来处理，需要在字面值后面添加F/f
+
+	注意：
+	     double和float在计算机内部二进制存储的时候都是近似值。
+	     在现实世界当中有一些数字是无限循环的，例如：3.333333333333333·····
+	     这样计算机资源是有限的，用有限的资源存储无限的数据只能存储近似值。
+
+public class DataTypeTest06
+{
+	public static void main(String[] args){
+	
+	//3.0是double类型字面值
+	//d是double类型的变量
+	//不存在类型转换
+	double d = 3.0;
+	System.out.println(d);
+	
+	//这个需要类型转换，编译报错
+	//float f = 5.1;
+	
+	//解决方案：
+		//第一种方式:强制类型转换
+	//float f = (float)5.1;
+
+		//第二种方式:直接定义为float型
+		float f = 5.1f
+	}
+}
+
+ *布尔类型 boolean
+
+	在java语言当中boolean泪下只有两个值：true、false 没有其他值。
+	不像C语言当中，0和1可以表示假和真。
+
+	在底层存储的时候boolean类型占用1个字节，因为实际存储的时候false底层是0，true底层是1
+	布尔类型在实际开发当中非常重要，经常用在逻辑运算和条件控制语句当中。
+
+public class DataTypeTest07
+{
+	public static void main(String[] args){
+	
+		//编译错误：不兼容的类型
+		//boolean flay = 1;
+
+		boolean loginsuccess = ture;
+
+		//if语句后面讲
+		if(loginsuccess){
+			System.out.println("恭喜你，登录成功！");
+		}else{
+			System.out.println("对不起，用户名不存在或者密码错误！")
+		}
+	
+	}
+}
+
+=================================================================================================================
+
+*关于基本数据类型之间的互相转换：转换规则
+	1.八种基本数据类型当中除布尔类型之外剩下的7种类型之间都可以互相转换
+	2.小容量向大容量转换，称为自动转换类型，容量从小到大排序：
+		byte < short < long < float < double
+		        char <
+		注：
+		   任何浮点型不管占用几个字节，都比整数型容量大。
+		   char和short可表示的种类数量相同，但是char可以取更大的正整数
+
+	3.大容量转换成小容量，叫做强制类型转换，需要加强制类型转换符，程序才能编译通过，
+	但是在运行阶段会损失精度，所以谨慎使用
+	
+	4.当整数字面值没有超过byte，short，char的取值范围，可以直接赋值给byte，short，char类型的变量。
+
+	5.byte，short，char混合运算，先各自转换成int类型再做运算。
+
+	6.多种数据类型混合运算，先转换成容量最大的那种类型再做运算。
+
+	注意:
+		byte b = 3; 可以编译通过,没有超出byte类型取值范围
+
+		int i = 10;
+		byte b = i / 3;  编译报错,编译器只检查语法,不会运算i/3
+
+public class DataTypeTest08
+{
+	public static void main(String[] args){
+	
+	//出现错误，1000超出了byte的范围
+	//byte a = 1000;
+
+	//正确，因为20没有超出byte范围
+	//所以赋值
+	byte a = 20;
+
+	//变量名不能重名
+	//short a = 10000；
+
+	//正确，因为数值1000没有超出short范围
+	short b = 1000;
+
+	//正确，因为默认值就是int，并且没有超出范围
+	int c = 1000;
+
+	//正确，可以自动类型转换
+	long d = c;
+
+	//错误，出现精度丢失问题，大类型转换成小类型会出现问题
+	//int e = d;
+
+	//因为java中的运算会转成最大类型
+	//二10和3默认为int，所以运算后的最类型也是int
+	//所以是正确的
+	int f = 10/3; //3
+
+	//声明10为long类型
+	long g  = 10;
+
+	//出现错误，多个数值再运算过程中，会转换成容量最大的类型
+	//以下示例最大类型为double，而h为int，所以就会出现大类型(long)到小类型(int)的转换，会丢失精度
+	int h = g/3;
+
+	//可以强制类型转换，因为运算结果没有超出int范围
+	//int h = (int)g/3;
+
+	//可以采用long类型来接收运算结果
+	//long h = g/3;
+
+	//出现精度损失问题，以下问题主要是优先级问题
+	//将g转换成int，然后又将int类型的g转换成byte，最后byte类型的g和3运算，
+	//他的运算结果类型就是int，所以int赋值给byte就出现了精度损失问题
+	//byte h = (byte)(int)g/3;
+
+	//正确
+	//byte h =(byte)(int)(g/3);
+
+	//不能转换，因为优先级的问题
+	//byte h = (byte)(int)g/3;
+
+	//可以转换,因为运算结果没有超出byte范围
+	//byte h = (byte)(g/3);
+
+	//可以转换,因为运算结果没有超出short范围
+	short h = (short)(g/3);
+
+	short i = 10;
+	byte j = 5;
+
+	//错误,short和byte运算,首先会转换成int再运算
+	//所以运算结果为int,int赋值给short就会出现精度损失问题
+	//short k = i + j;
+
+	//可以将运算结果强制类型转换成short
+	//short k = (short)(i + j);
+	
+	//因为运算结果为int,所以可以采取int类型接收
+	int k = i + j;
+
+	char l = 'a';
+	System.out.println(l); //a
+	
+	//输出结果为97,取得a的ascii码值,让后与100进行相加运算
+	System.out.println((byte)1); //97
+
+	int m = l + 100;
+	//输出结果为197,取得a的ascii码值,让后与100进行相加运算
+	System.out.println(m);
+
+	double dd = 10/3;
+	System.out.println(dd); //3.0;
+
+	dd = 10.0 / 3;
+	System.out.println(dd); //3.3333333333333333335
+
+	}
+}
+
+==============================================================================================================================
+
+*关于java编程中运算符之:算数运算符
+	+ 求和
+	- 相减
+	* 相乘
+	/ 商积
+	% 求余【取模】
+
+	++ 自加1
+	-- 自减1
+
+	注意: 一个表达式当中有多个运算符,运算符有优先级,不确定加(),优先级得到提升.
+
+public class OperatorTest01
+{
+	public static void main(String[] args){
+
+		int i = 10;
+		int j = 3;
+		System.out.println(i + j); //13
+		System.out.println(i - j); //7
+		System.out.println(i * j); //30
+		System.out.println(i / j); //3
+		System.out.println(i % j); //1
+
+		k++;
+		System.out.println(k); //11
+		int y =10;
+		++y;
+		System.out.println(y); //11
+		//小结
+		//++运算符可以出现在变量前和后,运算结束后,改变量中的值都会自加1
+		
+		//出现在变量后
+		//规则:先做赋值运算,再对变量中保存的值进行自加1
+		int a = 100;
+		int b = a ++;
+		System.out.println(a); //101
+		System.out.println(b); //100
+
+		//出现在变量前
+		//规则:先进行自加1运算,再做赋值运算.
+		int m = 20;
+		int n = ++ m;
+		System.out.println(m); //21
+		System.out.println(n); //21
+
+		int mm = 500;
+		System.out.println(mm);
+
+		int e = 100;
+		System.out.println(e ++); //100
+		System.out.println(e); //101
+
+		int s = 100;
+		System.out.println(++ s); //101
+		System.out.println(s); //101
+
+		System.out.println(-- s); //100
+		System.out.println(s ++); //100
+		System.out.println(s --); //101
+		System.out.println(s --); //100
+		System.out.println(s --); //99
+		System.out.println(s); //98
+	}	
+}
+
+==========================================================================================================================
+
+*关系运算符:
+
+	>	大于
+	>=	大于等于
+	<	小于
+	<=	小于等于
+	==	等于
+	!=	不等于
+
+	= 是赋值运算符
+	== 是关系运算符
+
+	关系运算符的运算结果一定是布尔类型: true/false
+
+public class	OperatorTest02
+{
+	public static void main(String[] args){
+	
+		int a = 10;
+		int b = 10;
+
+		System.out.println(a > b); //false
+		System.out.println(a >= b); //true
+		System.out.println(a < b); //false
+		System.out.println(a <= b); //true
+		System.out.println(a == b); //true
+		System.out.println(a != b); //false
+	}
+}
+
+
+* 逻辑运算符:
+
+	&	逻辑与
+	|	逻辑或
+	!	逻辑非
+	^	逻辑异或 
+
+	&&	短路与
+	||	短路或
+
+  逻辑运算符要求两边的算子都是布尔类型,并且逻辑运算符最终的结果也是一个布尔类型
+  短路与 和 逻辑与 最终的运算结果都是一样的,只不过短路与会出现短路现象.同理短路或和逻辑或.
+
+public class OperatorTest03
+{
+	public static void main(String[] args){
+
+		System.out.println(5 >3 & 5 > 2); //ture
+		System.out.println(5 >3 & 5 > 6); //false
+		System.out.println(5 >3 | 5 > 6); //ture
+		
+		System.out.println(ture & ture); //ture
+		System.out.println(ture & false); //false
+		System.out.println(ture | false); //ture
+		System.out.println(!false); //ture
+		System.out.println(ture ^ false); //ture
+		System.out.println(ture ^ ture); //false
+
+		//逻辑与 和 短路与 【区别】
+		int x = 10;
+		int y = 8;
+		//System.out.println(x < y & ++x < y );
+		//System.out.println(x); //11
+
+		System.out.println(x < y && ++x < y );
+		System.out.println(x); //10
+
+		/*
+		结论：
+			短路与 如果前面那个 x < y 结果是false 足以让整个表达式得出最终结果了 那么后面的表达式就不再执行了 
+			故++x没有执行还是10。而 逻辑与 会完成整个表达式的运算
+
+			从某个角度来看，短路与更智能。由于后面的表达式可能不执行，所以执行效率较高。这种方式再实际开发中
+			使用跟多。
+
+			但是在某些特殊的业务逻辑当中，要求运算符两边的算子必须全部完成，故只能使用逻辑与
+			
+		*/
+	}  
+}
+
+
+*赋值类运算符
+	基本的赋值运算符
+		=
+	扩展的赋值运算符
+		+=
+		-=
+		*=
+		/=
+		&=
+
+	1.赋值类的运算符优先级：先执行等号右边的表达式，将执行结果赋值给左边的变量。
+
+	2.注意以下代码：
+
+	byte i = 10;
+	i += 5； 等同于：i = (byte)(i + 5);
+
+	long x = 10L;
+	int y =20;
+	y += x;  等同于：i = (int)(y + x);
+
+	3.主要结论：扩展类的赋值运算符不改变运算符结果类型，假设最初这个变量的类型是byte类型，
+	无论怎么进行追加或者追减，最终该变量的数据类型还是byte类型
+
+public class OPeratorTest01
+{
+	public static void main(String[] args){
+	
+	//基本的赋值运算符
+ 	int i = 10；
+	i = i + 1；
+	System.out.println(i); //10
+
+	//扩展类的运算符 【+=运算符可以翻译为“追加/累加”】
+	i += 5；  //结果和i = i +5；相等
+	System.out.println(i); //20
+
+	i -= 5; //结果和i = i - 5; 相等
+	System.out.println(i) //15
+
+	i *= 2; //结果和：i = i * 2; 相等
+	System.out.println(i); //30
+
+	i /=4; //结果和；i = i / 4; 相等
+	System.out.println(i); //7
+
+	i %= 2; //结果和：i = i % 2; 相等
+	System.out.println(i); //1
+
+	//10没有超出byte取值范围，可以直接赋值
+	byte b = 10;
+
+	//编译错误
+	//编译器只能检查语法，不运行程序
+	b = b + 5;
+	
+	//通过
+	b = (byte)(b + 5);
+	System.out.println(b); //15
+	
+	//通过
+	byte x = 10;
+	x += 5; //等同于：x = (byte)(x + 5); 而不等同于：x = x + 5;
+	
+	//通过
+	byte z = 0;
+	z += 128; //等同于：z = (byte)(z + 128);
+	System.out.println(z); //-128 【精度损失】
+
+	}
+}
+
+======================================================================================================================
+
+*java中的“+”运算符
+	
+	1. +运算符在java语言当中有两个作用：
+		* 加法运算符，求和
+		* 字符串的链接运算
+
+	2.当“+”运算符两边的数据都是数字的话，一定是进行加法运算
+
+	3.当“+”运算符两边的数据只要有一个数据是字符串，一定进行字符串链接运算
+	  并且，链接运算之后结果还是一个字符串类型
+
+	4.在一个表达式当中可以出现多个“+”，在没有添加小括号的前提之下，遵循自左向右的顺序依次运算。
+=========================================================================================================================
+
+public class OperatorTest02
+{
+	public static void main(String[] args){
+		
+		System.out.println(10 + 20 + 30); // 60 这里的加号是求和
+		System.out.println(10 + 20 + "30"); // "3030" 第一个加号是求和，第二个加号是字符串链接
+		System.out.println(10 + (20 + "30"));// "102030" 两个加号都是字符串链接
+		
+
+		int a = 10;
+		int b = 20;
+
+		//要求在控制台上输出 "10 + 20 = 30"
+		System.out.println("10 + 20 = 30");
+
+		//要求以动态的方式输出
+		System.out.println("10 + 20 =" + a +b); // 10 +20 = 1020
+		System.out.println("10 + 20 =" + (a +b)); // 10 + 20 = 30 
+		System.out.println("a + 20 =" + (a +b)); // a + 20 = 30
+		System.out.println(a "+ 20 =" + (a +b)); // 10 + 20 = 30
+		System.out.println(a "+ b =" + (a +b)); // 10 + b = 30
+		System.out.println(a "+" + b + "=" + (a +b)); // 10 + 20 = 30  只有这个成功动态输出
+
+		a = 100;
+		b = 200;
+
+		System.out.println(a "+" + b + "=" + (a +b)); 
+
+		// 引用类型String
+		// String是SUN公司在javaSE当中提供的字符串类型
+		// String.class字节码文件
+
+		//int是基本数据类型，i是变量名，10是int类型
+		int i = 10;
+
+		//String是引用数据类型，s是变量名，"abc"是String类型的字面值
+		//String s = "abc";
+
+		String usename = "zhangsan";
+
+		System.out.println("登录成功，欢迎" +  usename + “回来") //登录成功，欢迎zhangsan回来
+
+
+	}
+}
+
+=======================================================================================================================
+
+三目运算符
+	1 语法规则
+		布尔表达式 ? 表达式1 : 表达式2
+		当布尔表达式的结果为true时，选择表达式1作为这个表达式的执行结果
+		当布尔表达式的结果为false时，选择表达式2作为这个表达式的执行结果
+
+public class OperstorTest03
+{
+	public static void main(String[] args){
+	
+	//布尔类型的变量
+	boolean sex =false;
+
+	//编译不通过，语法错误
+	//sex ? '男' : '女';
+
+	//编译通过
+	char c = sex ? '男' : '女';
+	System.out.println(c); //女
+
+	//编译不通过，类型不兼容
+	//char c = sex "男" : '女';
+
+	System.out.println(10);
+	System.out.println('10');
+
+	//可以
+	System.out.println(sex ? '男' : '女');
+
+	String s = sex ? "男的" : "女的";
+	System.out.println(s);
+	}
+}
+
+===============================================================================================
+
+控制语句
+ 
+  * 选择语句
+	- if，if..else
+	- switch
+
+  * 循环语句
+	- for
+	- while
+	- do..while
+
+  * 控制循环的语句
+	- break
+	- continue
+
+关于java语言中的if语句
+
+	1.if语句的语法结构：四种编写方式
+		
+		第一种
+			if(布尔表达式){
+				java语句;
+				java语句;
+				java语句;
+				java语句;
+				java语句;
+				....
+			}
+
+		第二种
+			if(布尔表达式){
+				java语句;
+				java语句;
+				....
+			}elae{
+				java语句;
+				java语句;
+				....
+			}
+
+		第三种
+			if(布尔表达式){
+				java语句;
+				java语句;
+				....
+			}elae if(布尔表达式){
+				java语句;
+				java语句;
+				....			
+			}elae if(布尔表达式){
+				java语句;
+				java语句;
+				....
+			}elae if(布尔表达式){
+				java语句;
+				java语句;
+				....
+			}....
+
+		第四种
+			if(布尔表达式){
+				java语句;
+				java语句;
+				....
+			}elae if(布尔表达式){
+				java语句;
+				java语句;
+				....			
+			}elae if(布尔表达式){
+				java语句;
+				java语句;
+				....
+			}elae if(布尔表达式){
+				java语句;
+				java语句;
+				....
+			}else{
+				java语句;
+				java语句;
+				....
+			}
+
+
+	2.重点：对与java中的if语句来说，只要有一个分支执行，整个if语句全部结束。
+	
+	3.所有的if语句都可以嵌套使用，只要合理。
+	
+		if(){
+			if(){
+				if(){
+				}
+			}
+		}else{
+			if(){
+			}else{
+				if(){
+					if(){
+					}
+				}
+			}
+		}
+	
+	  注意：嵌套使用的时候，代码格式要保证完美。【该缩进的时候必须缩进，大部分情况下使用大括号包围的需要缩进】
+	
+===========================================================================================================================
+
+//需求：
+	假设系统给定一个考生的成绩，成绩可能带有小数点
+	根据学生的成绩判断该学生成绩等级：
+		[90-100]	A
+		[80-90]		B
+		[70-80]		C
+		[60=70]		D
+		[0-60]		E
+	
+	以上的逻辑判断采用if语句完成，应该怎么写？
+
+public class IfTest01
+{
+	public static void main(String[] args){
+	 
+		int grade = 90;
+
+		if (grade <0 || grade >100){
+			System.out.println("对不起，您提供的成绩不合格")
+		}else if (grade >= 90){
+			System.out.println('A');
+		}else if (grade >= 80){
+			System.out.println('B');
+		}else if (grade >= 70){
+			System.out.println('C');
+		}else if (grade >= 60){
+			System.out.println('D');
+		}else{
+			System.out.println('E');
+		}
+	}
+}
+--------------------------------------------------------------------------------------------
+public class IfTest01
+{
+	public static void main(String[] args){
+		
+		int soore = 30;
+
+		String grade = "该考生的考试成绩等级是：E等级";
+
+		if (soore <0 || soore >100){
+			grade = "该考生的考试成绩等级是：E等级";
+		}else if (soore >= 90){
+			grade = "该考生的考试成绩等级是：A等级";
+		}else if (soore >= 80){
+			grade = "该考生的考试成绩等级是：B等级";;
+		}else if (soore >= 70){
+			grade = "该考生的考试成绩等级是：C等级";
+		}else if (soore >= 60){
+			grade = "该考生的考试成绩等级是：D等级";
+		}
+		System.out.println(grade);
+	}
+}
+
+/*
+	需求:
+		假设系统给定一个人的年龄，根据年龄来判断这个人处于生命的哪个阶段，年龄必须在[0-150]
+			[0-5] 幼儿
+			[6-10] 少儿
+			[11-18] 青少年
+			[19-35] 青年
+			[36-55] 中年
+			[56-150] 老年
+-----------------------------------------------------------------------------------------------------------------------------
+
+	这里需要了解 【接收用户键盘输入】
+
+	System.out.println(); 负责向控制台输出【从内存到控制台，输出的过程，这是从内存中出来了】
+	接收用户键盘输入，从"键盘"到"内存"。【输入的过程，到内存去】
+
+	以下代码先不要问为什么！我们先固定编写可以进入用户键盘的输入
+
+public class keyInputTest
+{
+	public static void main(String[] args){
+	
+		//创建键盘扫描对像
+		java.util.Scanner s = new java.util.Scanner(System.in);
+
+		//第二步：调用Scanner对象的next()方法开始接收用户键盘输入
+		//程序执行到这里会停下来，等待用户的输入
+		//当用户输入的时候，并且最终敲回车键的时候，键入的信息会自动赋值给userInputContent
+		//程序执行到这里，用户输入的信息已经到内存中了。
+		//接收文本【以字符串的形式接收】
+		//String userInputContent = s.next(); //标识符的命名规范：见名知意
+		
+		//接收数字【以整数型int的形式来接收】
+		int num = s.nextInt();
+
+		//将内存中的数据输出到控制台
+		//System.out.println("您输入了：" + userInputContent);
+		
+		System.out.println("您输入的数字是：" + num);
+
+	}
+
+总结：记住代码，或者直接将代码复制黏贴
+	
+	第一步：
+		java.util.Scanner s = new java.util.scanner(System.in);
+
+	第二步：
+		String str = s.next();
+		或
+		int num = s.nextInt();
+
+-------------------------------------------------------------------------------------------------------------------
+
+了解以上操作回到题目：
+
+public class IfTest02
+{
+	public static void main(String[] args){
+	
+	//1.接收键盘输入：年龄【输入的时候必须输入数字】
+	java.util.Scanner s = new java.util.Scanner(System.in);
+	//System.out.println("请输入您的年龄：");
+	System.out.print("请输入您的年龄："); //输出提示信息，要不然用户根本不知道这里要干嘛！
+	int age = s.nextInt(); //停下来等待用户的输入，输入之后自动接收，赋值给age变量。
+	//System.out.println("age = " + age);
+	
+	//2.根据需求进行业务逻辑判断
+	String str = "老年";
+	if(age < 0 || age > 150){
+		str = "您输入的年龄不合法，年龄值要在[0-150]之间";
+	}else if(age <= 5){
+		str = "您处于生命周期的幼儿阶段";
+	}else if(age <= 10){
+		str = "您处于生命周期的少年阶段";
+	}else if(age <= 18){
+		str = "您处于生命周期的青少年阶段";
+	}else if(age <= 35){
+		str = "您处于生命周期的青年阶段";
+	}else if(age <= 55){
+		str = "您处于生命周期的中年阶段";
+	}
+	System.out.println("您处于生命周期的" + str + "阶段");
+
+	}
+}
+
+=====================================================================================================================
+
+需求：
+	判断当前天气：
+		当外面下雨：
+			带雨伞：
+				判断性别：
+					男：带一把大黑伞
+					女：带一把小花伞
+		
+		当外面是晴天：
+			判断天气温度：
+				当天气在30度以上：
+					当性别为男：戴墨镜
+					当性别为女：擦防晒霜
+		
+	提示：
+		1.一定要有嵌套
+		2.天气状况，温度，性别都需要键盘输入。
+			天气状况：1表示下雨 0表示晴天
+			温度直接使用数字
+			性别：1代表男 0代表女
+
+public class IfTest03
+{
+	public static void main(String[] args){	
+	
+		java.util.Scanner s = new java.util.Scanner(System.in);
+
+		System.out.println("欢迎使用本系统，通过本系统可以完成一些简单的判断：");
+		System.out.println("说明1：1表示下雨，0表示晴天");
+		System.out.println("说明2：1表示男，0表示女");
+		System.out.println("说明3：温度直接用数字表示");
+
+		//接收天气的状况
+		System.out.print("请输入当前天气状况：");
+		int weather = s.nextInt();
+
+		//性别
+		System.out.print("请输入性别");
+		int sex = s.nextInt();
+		
+		//判断天气情况
+		if(weather == 0){
+			System.out.print("外面下雨了");
+				//判断性别
+				if(sex == 0){
+					System.out.print("少爷带把大黑伞出门吧");
+				}else if(sex == 1){
+					System.out.print("公主带把小花伞出门吧");
+				}else{
+					System.out.print("对不起，您的性别是怎么回事？");
+				}
+
+		}else if(weather == 1){
+			System.out.print("天气晴朗");
+
+			//温度
+			System.out.print("请输入当前温度");
+			int tem = s.nextInt();
+				
+				//判断温度
+			if(tem > 30){
+
+				//判断性别
+				if(sex == 0){
+						System.out.print("少爷带个墨镜吧");
+				}else if(sex == 1){
+						System.out.print("公主出门涂点防晒霜吧");
+				}else{
+						System.out.print("对不起，您的性别是怎么回事？");
+				}
+			}	
+		}else{
+			System.out.println("对不起，您输入的天气状况不存在！")
+		}
+	}
+}
+
+==========================================================================================================
+
+public class IfTest03
+{
+	public static void main(String[] args){
+
+		boolean sex = true;
+		
+		//这种写法是正确的
+		//就 一句话 一个判断 的话大括号是可以省略的
+		if(sex) System.out.println("男"); else System.out.println("女")
+
+	//------------------------------------------------------------------------
+		//下面写发有语法错误 报错行在1063行
+		//因为在没有大括号的情况下下面的 if会默认大括号范围是只有1061行
+		//所以1062行成为独立的一行输出，不管判断结果如何都会输出"呵呵"
+		//造成else找不到if配对 编译报错
+		if(sex)
+			System.out.println("男");
+			System.out.println("呵呵");
+		else
+			System.out.println("女")；
+	}
+}
+
+================================================================================================================
+swith控制语句
+
+	1.switch语句也属于选择结构，也是分支语句
+
+	2.switch语句的语法结构：
+
+	    //一个比较完整的switch语句应该这样编写:
+			
+			switch(int或String类型的字面值或变量){
+				
+				case int或String类型的字面值或变量 :
+					java语句;
+					···
+					break;
+				case int或String类型的字面值或变量 :
+					java语句;
+					···
+					break;
+				case int或String类型的字面值或变量 :
+					java语句;
+					···
+					break;
+				case int或String类型的字面值或变量 :
+					java语句;
+					···
+					break;
+				···
+				default :
+					java语句;
+			}
+		
+	3.switch语句的执行原理:
+		switch后面小括号当中的"数据"和case后面的"数据"进行一一匹配，匹配成功的分支执行。
+		按照直上而下的顺序依次匹配
+
+	4.匹配成功的分支执行，分支当中最后有"break;"语句的话，整个switch语句终止。
+
+	5.匹配成功的分支执行，分支当中最后没有"break;"语句的话，直接进入下一个分支(无需匹配)。
+	  这种现象被称为case穿透现象【提供break语句可以避免穿透】。
+
+	6.所以分支都没有匹配成功，当有default的语句话，会执行default分支当中的程序。
+
+	7.switch后面和case后面只能是int或者String类型的数据，不能探测其他类型
+		*当然byte short char 也可以直接写到switch和case后面，因为它们可以进行自动类型转换成int类型
+
+	8.case可以合并
+		
+		int i = 1;
+
+		switch(i){
+			case 1: case 2: case 3: case 10:
+				System.out.println("Test Code!");
+		}
+
+
+public class SwitchTest01
+{
+	public static void main(String[] args){
+		
+		//编译报错
+		//long a = 10L;
+		//int b = a;
+		
+		//编译报错
+		//long x = 100L;
+		//switch(x){}
+		
+		byte b = 10;
+		switch(b){}
+
+		//解决编译器错误
+		long x = 100L;
+		switch((int)x){}
+
+		String username = "zhangsan";
+		switch(username){}
+
+		/*
+		System.out.println("---------------------------------------------------------------");
+
+		较完整的switch语句:
+
+		接收用户输入:
+			1 表示星期一
+			2 表示星期二
+			3 表示星期三
+			 ...
+			7 表示星期日
+		java.util.Scanner s = new java.util.Scanner(System.in);
+		System.out.print("请输入数字:");
+		int num = s.nextInt();
+		switch(num){
+			case 1 :
+				System.out.println("星期一");
+				break;
+			case 2 :
+				System.out.println("星期二");
+				break;
+			case 3 :
+				System.out.println("星期三");
+				break;
+			case 4 :
+				System.out.println("星期四");
+				break;
+			case 5 :
+				System.out.println("星期五");
+				break;
+			case 6 :
+				System.out.println("星期六");
+				break;
+			case 7 :
+				System.out.println("星期日");
+				break;
+			default :
+				System.out.println("对不起,您输入的数字不合法");
+		}
+
+		System.out.println("---------------------------------------------------------------");
+
+		//case穿透
+		switch(num){
+			case 1 :
+				System.out.println("星期一");
+			case 2 :
+				System.out.println("星期二");
+			case 3 :
+				System.out.println("星期三");
+				break;
+			case 4 :
+				System.out.println("星期四");
+				break;
+			case 5 :
+				System.out.println("星期五");
+				break;
+			case 6 :
+				System.out.println("星期六");
+				break;
+			case 7 :
+				System.out.println("星期日");
+				break;
+			default :
+				System.out.println("对不起,您输入的数字不合法");
+		}
+
+	}	
+}
+
+==================================================================================================
+
+public class SwitchTest02
+{
+	public static void main(String[] args){
+	java.util.Scanner s = new java.util.Scanner(System.in);
+		System.out.print("请星期几:");
+		String dayofweek = s.next();
+
+		switch(dayofweeek){
+
+			case "星期一" :
+				System.out.println("1");
+				break;
+
+			case "星期二" :
+				System.out.println("2");
+				break;
+
+			case "星期三" :
+				System.out.println("3");
+				break;
+
+			case "星期四" :
+				System.out.println("4");
+				break;
+
+			case "星期五" :
+				System.out.println("5");
+				break;
+
+			case "星期六" :
+				System.out.println("6");
+				break;
+
+			case "星期日" :
+				System.out.println("7");
+				break;
+
+		default :
+				System.out.println("对不起,您输入的星期不合法");
+
+		}
+	}
+}
+
+===================================================================================================
+/*
+	实现思路:
+		1.选择所以数据从键盘输入
+		2.使用switch语句进行判断
+		3.需要从控制台输入三次:
+			*第一个数字
+			*运算符
+			*第二个数字
+
+	最终在控制台上是这样的一个场景
+		欢迎使用简单计算机系统:
+		请输入第一个数字:
+		请输入运算符:
+		请输入第二个数字:
+		运算结果:
+*/
+public class SwitchTest03
+{
+	public static void main(String[] args){
+	
+		java.util.Scanner s = new java.util.Scanner(System.in);
+		System.out.println("欢迎使用简单计算机系统:");
+
+		System.out.print("请输入第一个数字:");
+		int num1 = s.nextInt();
+
+		System.out.print("请输入运算符:");
+		String operator = s.next();
+
+		System.out.print("请输入第二个数字:");
+		int num2 = s.nextInt();
+
+		int result = 0;
+
+		switch(operator){
+
+			case "+" :
+				result = num1 + num2;
+				break;
+				
+			case "-" :
+				result = num1 - num2;
+				break;
+
+			case "*" :
+				result = num1 * num2;
+				break;
+					
+			case "/" :
+				result = num1 / num2;
+				break;
+					
+			case "%" :
+				result = num1 % num2;
+				break;
+		}
+
+		System.out.println("运算结果为:" + num1 + operator + num2 + "=" + result);
+
+	}
+}
+
+======================================================================================================
+
+假设系统决定考生成绩,判断该考生的成绩等级:
+
+	1.有效成绩范围: [0-100]
+	
+	2.考试成绩可能带有小数
+
+	3.考试成绩和等级之间的对照关系:
+		[90-100]	A
+		[80-90)		B
+		[70-80)		C
+		[60-70)		D
+		[0-60)		E
+
+	4.以上需求必须采用switch语句完成,不能采用if.
+
+	窍门: (int)(成绩 / 10)
+		0
+		1
+		2
+		3
+		4
+		5
+		6
+		7
+		8
+		9
+		10
+
+public class SwitchTest05
+{
+	public static void main(String[] args){
+	
+		//考生成绩
+		double score = 95.5;
+	
+		int grade = (int)(score / 10);
+
+		switch(grade){
+			case 9 : case 10 :
+			System.out.println('A');
+			break;
+		
+			case 8 :
+			System.out.println('B');
+			break;
+
+			case 7 :
+			System.out.println('C');
+			break;
+
+			case 6 :
+			System.out.println('D');
+			break;
+
+			default :
+			System.out.println('E');
+		}
+
+	}
+}
+
+=============================================================================================================================
+
+	1.循环结构
+		在程序当中总有一些需要反复的/重复的执行的代码,假设没有循环结构,
+		那么这段需要执行的代码自然是需要编写的.代码无法得到重复
+		使用.所以多数编程语言是支持循环结构的,将来把需要反复执行的代码片段
+		放到"循环体",再合计计数器,共同控制这段需要反复执行的代码.
+
+	2.基本上所以的编程语言支持的循环包括三种:
+		*for循环
+		*while循环
+		*do..while循环
+
+	3当前讲解for循环.for循环的语法结构是什么/?
+
+		语法结构:
+			
+			for{初始化表达式 ; 布尔表达式 ; 更新表达式){
+				//是需要重复执行表达的代码片段【循环体：由java语句构成】
+			}
+
+	4.for循环的执行过程/执行原理？
+		
+		*初始化表达式，布尔表达式，更新表达式 都不是必需的！【但是两个;;是必须的】
+		*初始化表达式最先执行，并且在整个for循环中只执行一次。
+		*布尔表达式必须是true/false，不能是其他值。
+		*for循环执行过程：
+
+			执行初始化表达式
+
+			判断布尔表达式
+				-布尔表达式为true
+					执行循环体
+					执行更新表达式
+
+					判断布尔表达式
+						-布尔表达式为true
+							执行循环体
+							执行更新表达式
+
+						-布尔表达式为false
+							循环结束
+			
+				-布尔表达式为false
+					循环结束
+
+-------------------------------------------------------------------------------------------------
+
+public class ForTest01
+{
+	public static void main(String[] args){
+
+		for(int i =0; i <= 10; i++){	
+			System.out.println(i); // 0 1 2 3 4 5 6 7 8 9 10
+		}
+
+		//死循环
+		for(;;){	
+			System.out.println("死循环");
+		}
+	}
+}
+
+-------------------------------------------------------------------------------------------
+
+public class ForTest02
+{
+	public static void main(String[] args){
+
+		for(int i =0; i < 10; i++){	
+			System.out.println(i); //0 1 2 3 4 5 6 7 8 9 
+		}
+		
+		//编译错误，不能访问for循环里的i变量 不是同一个作用域
+		//System.out.println(i)
+
+		int i = 0;
+		for(; i < 10; i++){	
+			System.out.println(i); //0 1 2 3 4 5 6 7 8 9 
+		}
+
+		//可以访问main方法作用域当中的i变量
+		System.out.prinpln(i); // 10
+
+	}
+}
+
+----------------------------------------------------------------------------------------
+
+public class ForTest03
+{
+	public static void main(String[] args){
+	
+		for(int = 0;int < 10; i++){
+			System.out.println(i); //0 1 2 3 4 5 6 7 8 9 
+		}
+
+		for(int = 0;int < 10;){
+			System.out.println(i); //0 1 2 3 4 5 6 7 8 9 
+			i++
+		}
+	
+		for(int = 0;int < 10;){
+			i++
+			System.out.println(i); //1 2 3 4 5 6 7 8 9 10
+		}
+	}
+}
+
+---------------------------------------------------------------------------------------
+
+循环语句和条件判断语句嵌套使用【for和if】
+
+public class ForTest04
+{
+	public static void main(String[] args){
+	
+		//找出1~100所以的奇数
+		
+		//方法一：
+		for(int i = 1;i <= 100;i += 2){
+			System.out.println(i);
+		}
+
+		//方法二：
+		for(int i = 1;i <= 100;i++){
+
+			if(i % 2 != 0){
+				System.out.println(i);
+			}
+		}
+
+		//以上两种方案优先选择第一种，代码少，循环次数少，效率高；	
+
+	}
+}
+
+------------------------------------------------------------------------------------------------------------------------
+	//在前一个程序的基础之上计算1~100所以奇数之和
+	
+public class ForTest05
+{
+	public static void main(String[] args){
+			
+		int sum = 0;
+
+		for(int i = 1;i <= 100; i += 2){
+			
+			//注意：定义sum变量不能放在这里，因为这是一个循环体。没循环一次就会执行一次 int sum = 0；清零了
+			//int sum = 0;
+			sum += i;
+		}
+		
+		System.out.println(sum);
+	}
+}
+
+------------------------------------------------------------------------------------------------------------------
+
+public class ForTest06
+{
+	public static void main(String[] args){
+		
+		for(int = 1;i <= 10; i++){
+			for(int j = 1;j <= 3;j++){
+				System.out.println(j); //这个循环体结果要打印10遍 1 2 3  共30个数字
+			}
+		}
+	}
+}
+
+---------------------------------------------------------------------------------------------------------------------------
+
+public class ForTest07
+{
+	public static void main(String[] args){
+		
+		for(int = 1;i <= 5; i++){
+			for(int j = 1;j <= 5;j++){
+				System.out.println(i * j);
+			}
+			
+			System.out.println("结束");
+		}
+	}
+}
+
+--------------------------------------------------------------------------------------------------------------------
+
+/*
+使用for循环输出九九乘法表
+
+1*1=1
+2*1=2 2*2=4
+3*1=3 3*2=6 3*3=9
+...................
+9*1=9 .................... 9*9=81
+*/
+
+public class ForTest08
+{
+	public static void main(String[] args){
+		for(int i = 1;i <= 9;i++){
+			for(int j = 1;j <= i;j++){
+			
+				System.out.print(i + "*" + j + "=" + (i * j) + " ");
+			
+			}
+			
+			System.out.print("\n");
+			
+		}
+	}
+}
+
+------------------------------------------------------------------------------------------
+
+/*
+	编写for循环找出1~100中的素数
+	素数: 又被称为质数,能够被1和自己数整除,不能被其他数字整除的数字称为素数
+*/
+
+public class ForTest09
+{
+	public static void main(String[] args){
+
+		int i,j;
+		
+		for(i = 2;i <= 100;i++){
+
+			for(j = 2;j < i;j++){
+
+				if(i % j == 0)
+					break;
+			}
+
+			if(j >= i)
+				System.out.print(i + " ");
+		}
+	}
+}
+
+/*
+	升级版:
+		编写for循环找出1~10000中所有的素数
+		要求每8个换一行输出
+*/
+public class ForTest09
+{
+	public static void main(String[] args){
+
+		int i,j,k;
+		k = 0;
+		
+		for(i = 2;i <= 100;i++){
+
+			for(j = 2;j < i;j++){
+
+				if(i % j == 0)
+					break;
+			}
+
+			if(j >= i){
+
+				System.out.print(i + " ");
+
+				k++;
+
+				if(k % 8 == 0){
+					System.out.print("\n");
+
+				}
+			}
+		}
+	}
+}
+
+
+
+=================================================================================================================
+
+while循环语句:
+	1.while循环的语法结构:
+		
+		while(布尔表达式){
+			循环体;
+		}
+
+	2.while循环的执行原理:
+		先判断布尔表达式的结果:
+			*true
+				-执行循环体
+					*判断布尔表达式的结果:
+						*true
+							-执行循环体
+								*判断布尔表达式的结果:
+									*true
+										-执行循环体
+											......
+									*false
+										-循环体结束
+						*false
+							-循环体结束
+			*false
+				
+
+	3.while循环体的次数: 0 ~ N 次
+
+public class WhileTest01
+{
+	public static void main(String[] args){
+	
+		//死循环
+		/*
+		whlie(true){
+			System.out.println("死循环");	
+		}
+		*/
+		
+		//编译通过
+		/*
+		int i = 10;
+		int j = 3;
+		while(i > j){
+			System.out.println("呵呵");
+		}
+		*/
+
+		//编译错误,无法访问 System.out.println("Hello World!"); 语句
+		int i = 10;
+		int j = 3;
+		while(10 > 3){
+			System.out.println("呵呵");
+		}
+		
+		System.out.println("Hello World!");
+		
+	}
+}
+-----------------------------------------------------------------------------------------------------------
+使用while循环输出1~10
+
+public class WhileTest02
+{
+	public static void main(String[] args){
+	
+		int i = 1;
+		while(i <= 10){
+			System.out.println(i);
+			i++;
+		}
+		System.out.pintln("end i -->" + i);
+		
+		System.out.pintln("-----------------------------------------------------------------------");
+
+		int j = 10;
+		while(j > 0){
+			System.out.println(j--); //10 9 8 7 6 5 4 3 2 1
+			System.out.println("end -->" + j); // 9 8 7 6 5 4 3 2 1 0
+		}
+		System.out.println("end j -->" + j); // 0
+		System.out.pintln("-----------------------------------------------------------------------");
+
+		int k = 1
+		while(K >= 0){
+			System.out.println(--k); // 9 8 7 6 5 4 3 2 1 0 -1
+		}
+		System.out.println("end k -->" + k); // -1
+	}
+}
+
+=========================================================================================================================
+
+do..while循环:
+	1. do..while循环的语法结构:
+		
+		do{
+			循环体;
+		}while(布尔表达式);
+
+	2. do..while循环执行原理:
+
+	3. do..while循环的执行次数: 1 ~ N 次
+
+	4 使用do..while循环语句最终有一个"分号"别丢了.
+
+public class DoWhileTest01
+{
+	public static void main(String[] args){
+		
+		int i = 10;
+		do{
+			System.out.println(i);
+		}while(i > 100);
+		
+		System.out.println("--------------------------------------------------");
+
+		while(i > 100){
+			System.out.println("i -->" + i);
+		}
+
+		System.out.println("--------------------------------------------------");
+
+		int a = 1;
+		do{
+			System.out.println(a); //1 2 3 4 5 6 7 8 9 10
+			a++;
+		}while(i <= 10);
+	}
+}
+
+=====================================================================================================
+
+关于java控制语言当中的break语句:
+	
+	1.break是java语言当中的关键字,被翻译为"中断/折断"
+
+	2.break + ";" 可以成为一个单独的完整的java语句: break;
+
+	3.break语句使用在switch语句当中,用来终止switch的语句执行.
+
+	4.break语句同样可以使用在循环句当中,用来终止循环语句的执行.
+
+	5.break终止哪个循环呢?
+
+	6.break;语句使用在for while do..while 循环语句当中用来跳出
+	循环,终止循环的执行.因为当程序到某个条件的时候,后续的循环没
+	必要执行了,再执行也是耗费资源,所以可以终止循环,这样可以提高程序执行效率.
+
+	7.'在默认情况下,break;语句终止的是离他最近的循环语句,当然也可以指定终止某个循环语句.
+	需要给循环起名,采用这种语法: break 循环名称:;
+
+	7.以下以for循环为例讲解break;语句.
+
+public class BreakTest01
+{
+	public static void main(String[] args){
+		
+		for(int i = 0; i < 10;i++){
+			if(i == 5){
+				break; //终止的是for循环
+			}
+
+			System.out.println("i -->" + i); // 0 1 2 3 4
+		}
+
+		System.out.println("--------------------------------------------");
+		
+		for(int j = 0; j < 3;j++){
+			for(int i = 0;i < 10;i++){
+				if(i == 5){
+					break; //这里的break;语句终止的是内层for循环,因为这个for离它最近.
+					       //这里的break;不会影响到外层for循环
+				}
+
+				System.out.println("i -->" + i);
+			}
+		}
+
+		System.out.println("--------------------------------------------");
+		
+		//给for循环起名为for1
+		for1:for(int j = 0; j < 3;j++){
+			//给for循环起名为for2
+			for2:for(int i = 0;i < 10;i++){
+				if(i == 5){
+					break for1;
+				}
+
+				System.out.println("i -->" + i);
+			}
+		}
+	}
+}
+
+============================================================================================================================
+
+continue语句:
+	
+	1.continue表示: 继续/go on/下一个
+
+	2.continue也是一个 continue关键字加一个分号构成的一个单独的完整的java语句,主要出现在循环语句当中用来控制循环的执行.
+
+	3.break和continue的区别? 
+		*break表示循环不执行了,跳出循环,终止循环.
+		*continue表示直接进入下一次循环继续执行.
+
+	4.continue也有这样的想法
+		continue 循环名称; 【作为了解内容】
+public class ContinueTest01
+{
+	public static void main(String[] args){
+		
+		for(int i = 0;i < 10;i++){
+			if(i == 5){
+				break;
+			}
+			System.out.println("i = " + i); // 0 1 2 3 4
+		}
+
+		System.out.println("Hello World!");
+
+		for(int i = 0;i < 10;i++){
+			if(i == 5){
+				continue;
+			}
+			System.out.println("i = " + i); // 0 1 2 3 4 6 7 8 9
+		}
+		System.out.println("Hello World!");
+
+		myFor:for(int i = 0;i < 10;i++){
+			if(i == 5){
+				continue myFor;
+			}
+			System.out.println("i = " + i); // 0 1 2 3 4 6 7 8 9
+		}
+		System.out.println("Hello World!");
+	}
+}
+
+==========================================================================================
+
+关于java语言中的方法
+	
+	1.方法怎么定义,语法结构:
+		[修饰符列表] 返回值类型,方法名(形式参数列表){
+			方法体;
+		}
+
+	2.对以上的语法结构进行解释说明:
+		
+		2.1 关于修饰符列表
+			*可选项,不是必须的
+			*目前统一写成: public static 【以后讲】
+			*方法的修饰符表当中"有static关键字"的话，怎么调用方法？
+				-类名.方法名(实际参数列表);
+		
+		2.2 返回值类型
+			*什么是返回值?
+				一个方法是可以完成某个特定功能的，这个功能结束后大
+				多数是需要返回最终执行结果的，执行结果可能是一个具
+				体存在数据。而这个存在数据值就是返回值。
+
+			*返回值类型?
+				返回值是一个具体存在数据，数据都是有类型的，此处需要
+				指定的是返回值的具体类型。
+
+			*返回值类型可以是那些类型？
+				java任意一种类型都可以，包括基本数据类型和所有
+				引用数据类型。
+
+			*也可能这个方法执行结束之后不返回任何数据，java中规定，当一个方
+			 法执行结束之后返回任何数据的话，返回值类型位置必须编写：void关键字。
+
+			*返回值类型可以是：
+				byte，short，int，long，float，double，boolean，char，String，void....
+			
+			*返回值类型若不是void，表示这个方法执行结束之后必须返回一个具体的数据。
+			当方法执行结束的时候没有返回任何的数据编译报错。
+
+			*怎么返回值？代码怎么写？
+				return 值; 
+				并且要求"值"的数据类型必须和"方法的返回值类型"一致，不然编译报错。
+
+			*返回值类型是void的时候，在方法体当中不能编写"return 值;"这样的语句。
+			 但是可以编写"return;"这样的语句。
+
+			 *只要带有return关键字的语句执行，return语句所在的方法结束。【不是JVM结束，是return所在的方法结束】
+
+		2.3方法名：
+			
+			*只要是合法的就行
+			*方法名最好见名知意
+			*方法名最好是动词
+			*方法名首字母要求小写，后面每个单词首字母大写
+
+		2.4 形式参数列表：简称形参
+			*形参是局部变量：int a; double b; float c; String s; .....
+			*形参的个数可以是：0 ~ N 个
+			*多个形参之间用"逗号"隔开
+			*形参中起决定性作用的是形参的数据类型，形参的名字就是局部变量的名字
+			*实参列表和形参列表必须满足：
+				-数量相同
+				-类型对应相同
+			例如：
+				方法定义
+				public static int sum(int a,int b){	// (int a,int b)是形参列表
+				}
+
+				方法调用
+				sum("abc","adf");编译器报错
+				sum(20,"asd");编译器报错
+				sum(20,30);				//(20.30)是实参列表
+				
+
+		2.5 方法体必须由大括号括起来，方法体当中的代码有顺序，遵循自上而下的顺序依次执行，
+		    并且方法体由java语句构成，每一个java语句以";"结尾
+
+	3.方法怎么调用？
+
+		方法只定义不去调用是不会执行的，只有在调用的时候才会执行，
+		语法规则：《方法的修饰符列表当中有static》
+			类名.方法名(实参列表); <这是一条java语句，表示某个调用类的某个方法，传递这样的实参。>
+
+// public表示公开的
+//class表示定义类
+//MethodTest03是一个类名
+public class MethodTest03{ //表示定义一个公开的类,起名MethodTest03,由于是公开的类,所以源文件名必须: MethodTest03.java
+	
+	//类体
+	//类体中不能直接编写java语句,除声明变量之外
+	//方法出现在类体当中
+
+	//方法
+	//public表示公开的
+	//static表示静态的
+	//void表示方法执行结束之后不需要任何返回数据
+	//main是方法名:主方法
+	//(String[] args):形式参数列表,其中String[]是一种引用数据类型,args是一个局部变量名
+	//所以以下只有args这个局部变量名是随意的
+	//主方法就需要这样固定编写,这是程序入口,【SUM规定的，必须这样写】
+
+	public static void main(String[] args){
+
+		//这里的程序是一定会执行的
+		//main方法是JVM负责调用的，就是程序的一个入口位置
+		//从这里作为起点开始执行程序
+		//既然是这样，我们就可以在这里编写java语句来调用其他方法
+
+		//调用MathodTest03的sum方法，传递两个实际参数
+		MethodTest03.sum(10,20); //(10,20)实参列表
+
+		//一个方法可以被重复调用
+		int a = 100;
+		MethodTest03.sum(a,500); //(a,500)实参列表
+
+		//再次调用方法
+		int k = 90;
+		int f = 10;
+		MethodTest03.sum(k,f); //(k,f)实参列表
+	}
+	
+	//自定义方法：不是程序入口
+	//方法作用：计算来个int类型数据的和，不要求返回结果，但是要求将结果直接输出到控制台
+	//修饰符列表：public
+	//返回值类型：void
+	//方法名：sum
+	//形式参数列表：(int x,int y)
+	//方法体：主要任务是求和之后输出结果
+	public static void sum(int i,int j){
+		System.out.println(i + "+" + j + "=" + (i + j));
+	}
+}
+
+方法的调用不一定在main方法当中，可以在其他方法当中。
+只要是程序可以执行到都位置，都可以去调用其他方法
+
+public class MethodTest04
+{
+	public static void sum(int a,int b){
+		System.out.println(a + "+" + b + "=" + (a + b));
+
+		//调用doSome方法
+		MethodTest04.doSome();
+	}
+
+	//主方法
+	public static void main(String[] args){
+		
+		//调用sum方法
+		MethodTest04.sum(1,2);
+
+		System.out.println("Hello World!");
+	}
+
+	public static void doSome(){
+		System.out.println("doSome!");
+	}
+}
+
+------------------------------------------------------------------------------------------
+
+//方法调用的时候实参和形参要求个数对应相同，数据类型对应相同
+//类型不同的话要求能够进行自动类型转换
+public class MethodTest05
+{
+	public static void main(String[] args){
+	
+		//编译错误，参数数量不同
+		//MetdodTest05.sum();
+
+		//编译错误，实参和形参的类型不是对应相同的
+		//MethodTest05.sum(true,false);
+
+		//可以
+		MethodTest05.sum(10L,20L);
+		
+		//可以 存在自动类型转换：int --> long
+		MethodTest05.sum(10,20);
+
+		//可以
+		MethodTest05.sum((long)3.0,20);
+	}
+
+	public static void sum(long a,long b){
+		System.out.println(a + "+" + b + "=" + (a + b));
+	}
+}
+
+------------------------------------------------------------------------------------
+
+方法调用
+	1.方法的修饰符列表当中有static关键字，完整的调用方式是：类名.方法名(实参列表);
+	2.什么情况下可以省略"类名."?
+		m1(){
+			m2();
+		}
+		m1方法和m2方法在同一个类体当中，"类名."可以省略
+		
+
+public class MethodTest06
+{
+	public static void main(String[] args){
+		
+		//调用方法
+		MethodTest06.m();
+
+		//对于方法的修饰符列表当中有static类关键字的："类名."可以省略不写吗
+		m();
+
+		//调用其他类【不是本类中的】中的方法
+		A.doOther();
+
+		//编译报错,"类名."省略之后，默认从当前类中找"doOther"方法，在当前类中该方法不存在
+		doOther();
+	}
+	public static void m(){
+		System.out.println("m method execute!");
+		
+		//调用本类中的m2 可以省略"类名."
+		m2();
+
+		//不想调用本类中的m2方法，就必须添加"类名."了。
+		A.m2();
+	}
+	public static void m2(){
+		System.out.println("m2 execute!");
+}
+
+class A 
+{
+	public static void doOther(){
+		Ststem.out.println("A's doOther method invoke!")
+	}
+	public static void m2(){
+		System.out.println("m2 method execute!");
+}
+	
+---------------------------------------------------------------------------------------
+
+分析以下程序输出结果
+	main begin
+	m1 begin
+	m2 begin
+	m3 begin
+	m3 over
+	m2 over
+	m1 over
+	main over
+
+	对于当前的程序来说:【数据结构：栈】
+		* main方法最先被调用,但最后结束
+		* 最后调用的m3方法,但是最先结束
+
+
+
+public class MethodTest07
+{
+	public static void main(String[] args){
+		System.out.println("main begin");
+		m1();
+		System.out.println("main over");
+	}
+	
+	public static void main(String[] args){
+		System.out.println("m1 begin");
+		m2();
+		System.out.println("m1 over");
+	}
+
+	public static void main(String[] args){
+		System.out.println("m2 begin");
+		m3();
+		System.out.println("m2 over");
+	}
+
+	public static void main(String[] args){
+		System.out.println("m3 begin");
+		m4();
+		System.out.println("m3 over");
+	}
+}
+
+-------------------------------------------------------------------
+
+方法的返回值类型不是void时
+	
+	1.返回值类型不是void的时候
+		要求方法不想保证百分百的执行"return 值;"这样的语句来完成值的返回。
+		没有这个语句编译器会报错。
+
+	2.一个方法有返回值的时候，当我们调用这个方法的时候，方法返回了一个值，
+	对于调用者来说，这个返回值可以选择接收，也可以选择不接收。
+	但是大部分情况下我们都是接收的。
+
+public class MethodTest08
+{
+	public static void main(String[] args){
+
+		//调用方法
+		divide(10,3); //这里没有接收这个方法的返回数据
+
+	//这里接收以下方法执行接收之后的返回值
+
+		//采用变量接收
+		//变量的数据类型需要和返回值的数据类型一致，或者可以自动类型转换。
+		//boolean b = divide(10,3); //编译报错，类型不兼容
+
+		//赋值运算符的右边先执行，将执行结果赋值左边的变量
+		int i = divide(10,3);
+		System.out.println(i);
+		//或
+		long x = divide(10,3);
+		System.out.println(x);
+		//或
+		System.out.println(divide(10,3));
+	
+	}
+	
+	/*
+	   需求：
+		请定义一个方法，该方法可以计算两个int类型数据的商，
+		要求将最终结果返回给调用者
+		
+	*/
+
+	//编译报错，缺少返回语句
+	/*
+	public static int divide(int a,int b){
+	
+	}
+	*/
+
+	//编译报错，缺少返回值
+	/*
+	public static int divide(int a , int b){
+		return;
+	}
+	*/
+
+	//编译报错，方法定义的时候要求返回一个int类型，此时返回布尔类型，类型不兼容。
+	/*
+	public static int divide(int a , int b){
+		return true;
+	}
+	*/
+	
+	//可以通过，但是具体的方法体中编写的代码无法满足当前需求
+	/*
+	public static int divide(int a , int b){
+		return 1;
+	}
+	*/
+
+	public static int divide(int a , int b){
+		return a / b;
+	}
+}
+
+--------------------------------------------------------------------------------------------------------------
+
+深入研究return语句
+	*带有return关键字的java语句只要执行，所在的方法执行结束。
+	*在同一个作用域当中，return语句下面不能编写任何代码，因为这些代码永远都执行不到，所以报错
+
+public class MethodTest09
+{
+	public static void main(String[] args){
+
+		System.out.println(m());
+	}
+	
+	//编译报错，缺少返回语句
+	//无法保证百分百执行"return 1;"
+	/*
+	public static int m(){
+		int a = 10;
+		if(a > 3){
+			return 1;
+		}
+	}
+	*/
+
+	public static int m(){
+		int a = 10;
+		if(a > 3){
+			return 1;
+		}
+		return 0;
+	}
+
+	public static int m(){
+		int a = 10;
+		if(a > 3){
+			return 1;
+
+			//编译错误，因为无法访问
+			//System.out.println("Hello");
+		}
+		//可以
+		System.out.println("Hello");
+		
+		return 0;
+	}
+
+	public static int m(){
+		return 10 > 3 ? 1 : 0;
+	}
+}
+
+------------------------------------------------------------------------------
+
+在返回值类型是void的方法当中使用"return;"语句.
+	出现在返回值为void语句的方法当中主要是为了结束当前方法。
+public class MethodTest10
+{
+	public static void main(Strinf[] args){
+
+		m();
+
+		for(int i = 10;i > 10;i--){
+			if(i == 2){
+				return; //结束的是main方法
+			}
+			System.out.println("data --> " + i);
+		}
+		System.out.println("Execute Here!")
+	
+	}
+
+	//编译错误：对于结果类型为空的方法，无法返回值
+	/*
+	public static void m(){
+		return 10;
+	}
+	*/
+	
+	//可以
+	/*
+	public static void m(){
+		return;
+	}
+	*/
+	
+	/*
+	public static void m(){
+		for(int i = 0;i < 10;i++){
+			if(i == 5){
+				return; //不是终止for循环，而是整个m()方法
+				//break; //终止for循环
+			}
+			System.out.println("i --> " + i);
+		}
+		System.out.println("Hello World!");
+
+	}
+	*/
+}
+----------------------------------------------------------------------------------------------
+
+方法在执行过程当中,在JVM中的内存是如何分配的呢,内存是如何变化的?
+
+	1.方法只定义不调用,是不会执行的,并且在JVM中也不会给该方法分配"运行所属"的内存空间.
+	  只有在调用这个方法的时候,才会动态的给这个方法分配所属的内存空间.
+	
+	2.在JVM内测划分上有三块主要的内存空间:
+
+		*方法区内存
+		*堆内存
+		*栈内存
+
+	3.关于栈数据结构:
+		
+		*栈: stack ,是一种数据结构
+		*数据结构反应的是数据的存储形态
+		*常见的数据结构:
+			-数组
+			-队列
+			-栈
+			-链表
+			-二叉树
+			-哈希表/散列表
+			......
+
+	4.方法代码片段在哪里? 方法执行的时候执行过程的内存在哪里分配?
+		*方法代码片段属于 .class字节码文件的一部分,字节码文件在类加载的时候,
+		将其放到了方法区当中,所以JVM中的三块主要的内存空间中方法区内存最先有
+		数据,存放了代码片段.
+
+		*代码片段虽然在方法区内存当中只有一份,但是可以被重复调用,每一次调用
+		这个方法的时候,需要给该方法体分配独立的活动场所,在栈内存中分配.
+
+	5.方法在调用是瞬间,会给该方法分配内存空间,会在栈中发生压栈动作,方法执行结束
+	  之后,给该方法分配的内存空间全部释放,此时发生弹栈动作.
+		*压栈: 给方法分配内存
+		*弹栈: 释放该方法的内存空间
+	
+	6.局部变量在"方法体"中声明,局部变量运行阶段内存在栈中分配.
+
+
+---------------------------------------------------------------------------------------
+
+方法重载
+	
+	1.方法重载又被称为: overload
+
+	2.什么时候考虑方法重载?
+		*功能相同的时候,尽可能让方法名相同.
+		*功能不相同的时候,尽可能让方法名不同.
+	
+	3.什么条件满足之后构成了方法重载?
+		
+		*在同一个类当中
+		*方法名相同
+		*参数列表不同:
+			-数量不同
+			-顺序不同
+			-类型不同
+
+	4.方法重载和什么关系,和什么没有关系?
+		方法重载和 方法名+参数列表 有关
+		方法重载和 返回值类型 无关
+		方法重载和 修饰符列表 无关
+	
+public class OverloadTest03
+{
+	public static void main(String[] args){
+		m1();
+		m1(10);
+
+		m2(1,2.0);
+		m2(2.0,1);
+
+		m3(10);
+		m3(3.0);
+	
+	}
+	
+	//以下两个方法构成重载
+	public static void m1(){}
+	public static void m1(int a){}
+	
+	//以下两个方法构成重载
+	public static void m2(int a,double b){}
+	public static void m2(doule a,int b){}
+	
+	//以下两个方法构成重载
+	public static void m3(){int x}
+	public static void m3(double x){}
+	
+	//编译报错,不是方法重载 而是重复
+	//public static void m4(int a,int b)
+	//public static void m4(int b,int a)
+
+	//编译错误,不是方法重载	
+	/*
+	public static void x(){}
+	public static int x(){
+		return 1;
+	}
+	*/
+
+	//编译错误,不是方法重载	
+	/*
+	void x(){}
+	public static void x(){}
+	*/
+}
+
+public class OverloadTest04
+{
+	public static void main(String[] args){
+	
+	U.p(10);
+	U.p(false);
+	U.p("abc");
+	U.p(3.0);
+	}
+}
+
+//自定义类
+U.class
+{
+	public static void p(int b){
+		System.out.println(b);
+	}
+
+	public static void p(long b){
+		System.out.println(b);
+	}
+
+	public static void p(boolean b){
+		System.out.println(b);
+	}
+
+	public static void p(double b){
+		System.out.println(b);
+	}
+
+	public static void p(char b){
+		System.out.println(b);
+	}
+
+	public static void p(String b){
+		System.out.println(b);
+	}
+}
+
+
+--------------------------------------------------------
+
+关于方法的递归调用
+	1.什么是递归?
+		方法自身调用自身
+		a(){
+			a();
+		}
+	
+	2.递归是很耗费栈内存的,递归算法可以不用的时候尽量别用.
+	
+	3.以下程序运行的时候发生了这样的一个错误(不是异常,是错误Error):
+		java.lang.StackOverflowError
+		栈内存溢出错误.
+		错误发生无法挽回,只有一个结果,就是JVM停止工作.
+	
+	4.递归必须有结束条件,没有结束条件一定会发生栈内存溢出错误
+
+	5.递归即使有了结束条件,结束结束条件是正确的,也可能发生栈内存溢出错误,因为递归的太深了.
+
+	注意:
+		递归不使用尽量别用
+		但是有些情况下该功能的实线必须依靠递归方式.例如: 目录拷贝.  
+
+public class RecursionTest01
+{
+	
+	//主方法
+	public static void main(String[] args){
+
+		System.out.println("main begin");
+		
+		//调用doSome方法
+		doSome();
+
+		Syetem.out.println("main over");
+	}
+
+	//以下的代码片段虽然只有一份
+	//但是可以被重复的调用,并且只要调用doSome方法就会在栈内存中新分配一块内存空间.
+	public static void doSome(){
+		System.out.println("doSome begin");
+		doSome(); //这行代码不结束,下一行程序是不会执行的
+		System.out.println("doSome over");
+	}
+
+	public static void doSome(){
+		System.out.println("doSome begin");
+		doSome(); //这行代码不结束,下一行程序是不会执行的
+		System.out.println("doSome over");
+	}
+
+	public static void doSome(){
+		System.out.println("doSome begin");
+		doSome(); //这行代码不结束,下一行程序是不会执行的
+		System.out.println("doSome over");
+	}
+}
+
+-----------------------------------------------------------------------------
+
+不使用递归计算 1 ~ N 的和
+
+public class RecursionTest01
+{
+	public static void main(String[] args){
+	
+		// 1~4的和
+		/*
+		int n = 4;
+		int sum = 0;
+		for(int i = 1;i <= 4;i++){
+			sum += i;
+		}
+		System.out.println("sum = " + sum);
+		*/
+
+		//直接调用方法即可
+		int n = 4;
+		int retValue = sum(n);
+		System.out.println(retValue)
+	}
+
+	//单独的定义一个方法,这是一个独立的功能,可以完成1 ~ N 的求和
+	public static int sum(int n){
+
+		int result = 0;
+		for(int i = 1;i <= n;i++){
+			result += i;
+		}
+		return result;
+	}
+}
+
+使用递归计算 1 ~ N 的和
+
+public class RecursionTest01
+{
+	public static void main(String[] args){
+	
+		int n = 4;
+		int retValue = sum(n);
+		System.out.println(retValue)
+	}
+
+	public static int sum(int n){
+
+		if(n == 1)
+			return 1;
+		}
+		return n + sum( n - 1);
+	}
+}
+
+
+---------------------------------------------------------------------------------
+
+先不使用递归计算 N 的阶乘
+5的阶乘:
+	5 * 4 * 3 * 2 * 1
+
+public class RecoursionTest04
+{
+	public static void main(String[] args){
+		
+		int n = 5;
+		int retValue = method(n);
+		System.out.println(retValue);
+	}
+
+	public static int method(int n){
+		int result = 1;
+		for(int i = 1;i <= n;i++){
+			resule *= i;
+		}
+		return result;
+	}
+}
+
+使用递归计算 N 的阶乘
+//记住  面试题考的频率很高
+
+public class RecoursionTest04
+{
+	public static void main(String[] args){
+		
+		int n = 5;
+		int retValue = method(n);
+		System.out.println(retValue);
+	}
+
+	public static int method(int n){
+		if( n == 1){
+			return 1;
+		}
+		return n * method(n - 1);
+	}
+}
+
+

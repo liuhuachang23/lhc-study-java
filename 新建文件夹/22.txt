@@ -1,0 +1,266 @@
+反射
+
+    提出问题，引入反射机制 【package hsp.chapter22.reflection.question.ReflectionQuestion】
+
+    反射机制 【package hsp.chapter22.reflection;】
+
+        1)反射机制允许程序在执行期借助于Reflection API取得任何类的内部信息(比如成员变量，构
+          造器，成员方法等等），并能操作对象的属性及方法。反射在设计模式和框架底层都会用到
+        2)加载完类之后，在堆中就产生了一个Class类型 的对象（一个类只有一个Class对象），这个对
+          象包含了类的完整结构信息。通过这个对象得到类的结构。这个Class对象就像一面镜子，
+          过这个镜子看到类的结构，所以，形象的称之为：反射
+
+        反射机制可以完成
+            1)在运行时判断任意一个对象所属的类
+            2)在运行时判断任意一个类对象
+            3)在运行时构造任意一个类的对象
+            4)在运行时调用任意一个对象的成员变量和方法
+            5)生成动态代理
+
+        反射相关的主要类 【reflection01】
+            1) java.lang.Class: 代表一个类，Class对象表示某个类加载后在堆中的对象
+            2) java.lang.reflect.Method： 代表类的方法
+            3) java.lang.reflect.Field： 代表类的成员变量(属性、字段)
+            4) java.lang.reflect.Constructor：代表类的构造方法
+
+        反射优点和缺点及调用优化 【reflection02】
+
+            优点：可以动态的创建和使用对象(也是框架底层核心)，使用灵活，没有反射机制，框架技术就失去底层支撑。
+            缺点：使用反射基本是解释执行，对执行速度有影响.
+
+            反射调用优化-关闭访问检查
+            1) Method、Field、Constructor 对象 都有setAccessible()方法
+            2) setAccessible 作用是启动和禁用访问安全检查的开关
+            3) 参数值为true表示 反射的对象在使用时取消访问检查，提高反射的效率。参数值
+               为false则表示反射的对象执行访问检查
+
+    Class类 【package hsp.chapter22.class_】
+
+        梳理 【Class01】
+            1） Class也是类，因此也继承Object类[类图]
+            2） Class类对象不是new出来的，而是系统创建的[演示]
+            3） 对于某个类的Class类对象，在内存中只有一份，因为类只加载一次[演示]
+            4） 每个类的实例都会记得自己是由哪个 Class 实例所生成
+            5） 通过Class可以完整地得到一个类的完整结构，通过一系列API
+            6） Class对象是存放在堆的
+            7） 类的字节码：二进制数据，是放在方法区的，有的地方称为类的元数据(包括 方法代码
+                    变量名，方法名，访问权限等等）
+
+
+        Class类的常用方法 【Class02】
+
+            方法名                                 功能说明
+
+            1）static Class forName(String name)      返回指定类名 name 的 Class 对象
+            2）Object newInstance()                   调用缺省构造器，返回该Class对象的一个实例
+            3）getName()                              返回此Class对象所表示的实体（类、接口、数组类、基本类型等）名称
+            4）Class [] getInterfaces()               获取当前Class对象的接口
+            5）ClassLoader getClassLoader()           返回该类的类加载器
+            6）Class getSuperclass()                  返回表示此Class所表示的实体的超类的Class
+            7）Constructor[] getConstructors()        返回一个包含某些Constructor对象的数组
+            8）Field[] getDeclaredFields()            返回Field对象的一个数组
+            9）Method getMethod                       返回一个Method对象，此对象的形参类型为paramType
+              (String name, Class... paramTypes)
+
+
+        获取类对象的几种方式【GetClass】
+
+            在程序运行的不同阶段,使用不同的方法得到Class类对象
+
+            1) 第一个阶段: 代码阶段/编译阶段 使用 Class.forName()
+               前提：已知一个类的全类名，且该类在类路径下，可通过Class类的静态方法forName()获取，可能抛出ClassNotFoundException
+               实例： Class cls1 = Class.forName("java.lang.Cat"):
+               应用场景：多用于配置文件，读取类全路径，加载类.
+
+            2) 第二个阶段: Class类阶段(加载阶段) 使用 类.class
+               前提：若已知具体的类，通过类的class 获取，该方式 最为安全可靠，程序性能最高
+               实例：Class cls2 = Cat.class;
+               应用场景：多用于参数传递，比如通过反射得到对应构造器对象
+
+            3) 第三个阶段: 运行阶段 使用 对象.getClass()
+               前提：已知某个类的实例，调用该实例的getClass()方法获取Class对象
+               实例：Class cls3 = 对象.getClass();
+               应用场景：通过创建好的对象，获取Class对象。
+
+            4) 还有就是 在类加载器 得到Class类对象
+                1) 先得到类加载器 ClassLoader cl = 对象.getClass().getClassLoader();
+                2) 通过类加载器得到类对象 Class cls4 = cl.loadClass("类的全类名")、
+
+            5) 基本数据 (int, char,boolean,float,double,byte,long,short） 按如下方式得到Class类对象
+                Class cls5 = 基本数据类型.class
+            6) 基本数据类型对应的包装类，可以通过.TYPE 得到Class类对象
+                Class cls6 = 包装类.TYPE
+
+        那些类型有Class对象 【AllTypeClass】
+
+            1) 外部类，成员内部类，静态内部类，局部内部类，匿名内部类
+            2) interface : 接口
+            3) 数组
+            4) enum：枚举
+            5) annotation：注解
+            6) 基本数据类型 及对应包装类
+            7) void
+
+    类加载 【package hsp.chapter22.classload_;】
+
+        基本说明
+            反射机制是java实现动态语言的关键，也就是通过 反射实现 类动态加载。
+            1） 静态加载：编译时加载相关的类，如果没有则报错，依赖性太强
+            2） 动态加载：运行时加载需要的类，如果运行时不用该类，则不报错，降低了依赖性
+
+        类加载时机
+            1） 当创建对象时 (new)
+            2） 当子类被加载时
+            3） 调用类中的静态成员时
+            4） 通过反射
+
+        类加载流程
+
+            1.加载阶段
+                JVM 在该阶段的主要目的是将字节码从不同的数据源（可能是 class 文件、也可能是jar 包，甚至网络）
+                转化为：二进制字节流加载到内存中，并生成一个代表该类的 java.lang.Class 对象
+
+            2.验证阶段-验证
+              1）目的是为了确保 Class 文件的字节流中包含的信息符合当前虚拟机的要求，井且不会危害虚拟机自身的安全
+              2）包括：文件格式验证(是否以魔数 oxcafebabe开头）、元数据验证、字节码验证和符号引用验证[举例说明]
+              3）可以考虑使用 -Xverify:none 参数来关闭大部分的类验证措施，缩短虛拟机类加载的时间。
+
+            3.连接阶段(准备) 【ClassLoad02】
+                JVM会在该阶段对静态变量，分配内存并默认初始化（对应数据类型的默认初始值，如 0、0L、null、false 等），
+                这些变量所使用的内存都将在方法区内存中进行分配
+
+            4.解析阶段
+                虚拟机将 常量池的 符号引用 替换为 直接引用 的过程
+                理解： 比如两个类，在编译时两个类还没有加载到内存中，以符号的方式引用（相对引用），一旦到了类加载解析阶段
+                        就会有 两个类的Class对象，两个类对象 通过各自的内存地址直接引用
+
+            5.初始化阶段【ClassLoad03】
+                1）到初始化阶段，才真正开始执行类中定义的 java 程序代码，此阶段是执行<clinit>()方法的过程
+                2）<clinit>()方法 是由编译器按语句在源文件中出现的顺序，依次自动收集类中所有 静态变量的赋值动作
+                    和 静态代码块中的语句，并进行合井。
+                3）虚拟机会保证一个类的 <linit>()方法 在多线程环境中被正确地加锁、同步，如果多个线程同时去初始化一个类，
+                    那么只会有一个线程去执行这个类的 <clinit>()方法，其他线程都需要阻塞等待，直到活动线程执行<clinit>()方法完毕
+
+    通过反射获取类的结构信息 【hsp.chapter22.reflection.ReflectionUtils】
+
+        第一组：java.lang.Class类
+            1） getName:获取全类名
+            2） getSimpleName:获取简单类名
+            3） getFields:获取所有public修饰的属性，包含本类以及父类的
+            4） getDeclaredFields:获取本类中所有属性 （getDeclaredField("属性名") 获取指定属性对象）
+            5） getMethods:获取所有public修饰的方法，包含本类以及父类的
+            6） getDeclaredMethods:获取本类中所有方法 （getDeclaredMethod("方法名",形参类型对象列表) 获得指定方法对象）
+            7） getConstructors：获取本类public修饰的构造器
+            8） getDeclaredConstructors：获取本类中所有构造器 （getDeclaredConstructor(形参类型对象列表) 获得指定构造器对象 ）
+            9） getPackage:以Package 形式返回 包信息
+            10）getSuperClass:以Class 形式返回父类信息
+            11）getInterfaces:以Class[] 形式返回接口信息
+            12）getAnnotations:以Annotation[] 形式返回注解信息
+
+        第二组：java.lang.reflect.Field类
+            1） getModifiers：以int形式返回修饰符
+                    说明：默认修饰符为0，public为1，private为2，protected为4，static为8，final为16
+                    如：public static final 为33
+            2） getType：以Class形式返回类型
+            3） getName：返回类名
+
+        第三组：java.lang.reflect.Method类
+            1）getModifiers：以int形式 返回修饰符
+                    说明：默认修饰符为0，public为1，private为2，protected为4，static为8，final为16
+                    如：public static final 为33
+            2）getReturnType：以Class形式获取 返回类型
+            3）getName：返回方法名
+            4）getParameterType：以Class[] 返回参数类型数组
+
+        第四组：java.lang.reflect.Constructor类
+            1） getModifiers：以int形式 返回修饰符
+            2）getName：返回构造器（全类名）
+            3）getParameterTypes：以Class[] 返回参数类型数组
+
+    通过反射创建对象 【hsp.chapter22.reflection.ReflectionCreateInstance】
+
+        第一种：调用类中的public修饰的无参数构造器，来创建对象
+
+            1）获取 Class对象（aClass）
+            2）创建对象：Class对象.newInstance()
+
+        第二种：调用类中指定构造器
+
+            1）获取 Class对象（aClass）
+
+            2）根据参数列表，获取指定的 构造器对象：getDeclaredConstructor(形参类型对象列表)
+
+                  Constructor constructor1 = aClass.getDeclaredConstructor()    //无参
+                  Constructor constructor2 = aClass.getDeclaredConstructor(String.class, int.class) //有参
+
+                  （若构造器为public 也可以使用 getConstructor 获取）
+
+            3）爆破 非公有构造器 （public构造器 则不需要此步骤）
+
+                constructor1.setAccessible(true)
+                constructor2.setAccessible(true)
+
+            4）通过构造器对象，创建对象：newInstance(实参列表)
+
+                Object o1 = constructor1.newInstance();
+                Object o2 = constructor1.newInstance("吴小文", 10);
+
+
+    通过反射操作类中的成员
+
+        1、属性 【ReflectionAccessField】
+
+            1）获取Class对象（aClass）
+
+            2）创建 对象（o） //上面就是 对象的创建方式，这里不在讲解。
+
+            3）根据属性名，获取Field对象
+
+                Field field = aClass.getField("属性名")             //获取public属性（包括父类）
+                Field field = aClass.getDeclaredField("属性名")     //获取任何本类属性
+
+            4）爆破 非公有属性
+
+                field.setAccessible(true);
+
+            5）操作属性
+
+                设置属性值：field.set(o, 值);
+                获取属性值：field.get(o)
+
+                注意：如果是静态属性，上面的o就可以替换为null，因为静态属性是属于类中所有对象的，无需指定对象
+
+        2、方法 【ReflectionAccessMethod】
+
+            1）获取Class对象（aClass）
+
+            2）创建 对象（o）
+
+            3）根据方法名和参数列表获取Method方法对象：
+
+                Method m = aClass.getMethod("方法名", 形参类型对象列表)           //获取public方法（包括父类）
+                Method m = aClass.getDeclareMethod("方法名", 形参类型对象列表)    //获取任何本类方法
+
+            5）爆破 非公有方法
+
+                m.setAccessible(true);
+
+            6）访问 (调用方法 得到的返回值 类型统一为Object，但其运行类型 为对应的方法返回值类型)
+
+                Object returnValue = m.invoke(o, 实参列表);
+
+            注意：如果是静态方法，invoke(o, 实参列表) 可以写成 invoke(null, 实参列表)
+
+
+
+
+
+
+
+
+
+
+
+
+
+

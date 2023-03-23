@@ -1,0 +1,387 @@
+JDBC概述
+
+    1.基本介绍
+        1） JDBC为访问不同的数据库提供了统一的接口，为使用者屏蔽了细节问题。
+        2） Java程序员使用JDBC，可以连接任何提供了JDBC驱动程序的数据库系统，从而完成对数据库的各种操作。
+        3） JDBC的基本原理【JDBC原理示意图】
+        4） 模拟JDBC 【myjdbc】
+
+    2.JDBC带来的好处
+
+    3.JDBC工作原理
+        JDBC是java提供一套用于数据操作的接口API，不同的数据库厂商，需要针对这套接口，提供不同实现。
+        程序员只需要面向这套接口编程即可，实际调用的却是底层数据库厂商的实现部分
+
+    4. JDBC API
+        JDBC API 是一系列的接口，它统一规范了应用程序与数据库的连接，执行SQL语句，并到得到返回结果等各类操作，
+        相关类和接口在 java.sql 和 java.sql 包中
+
+JDBC简单使用【jdbc】
+
+    首先将mysql驱动jar文件引入（mysql-connection-java-5.1.37-bin.jar）
+
+    1. 演示一个最基本的jdbc使用 【Jdbc01】
+
+    2. java连接mysql的5种方式（重点掌握方式5）【JdbcConn】
+
+    3. 使用方式5 练习 对数据库中表 的操作 【JdbcExercise】
+        1）获取配置文件信息       -- 获取 url, user, password, driver
+        2）注册驱动              -- Class.forName(driver);
+        3）获取连接              -- DriverManager.getConnection(url, user, password);
+        4）得到Statement        -- connection.createStatement();
+        6）编写sql语句           -- dml语句
+        7）执行sql语句（dml）     -- statement.executeUpdate(sql)
+        8）关闭相关资源           -- close()
+
+JDBC操作数据库的步骤详解
+
+    1.注册驱动和获取连接（Driver接口 及 DriverManager驱动管理类）
+
+        1）注册驱动（我们要使用JDBC接口，首先要将 想要连接的 数据库的驱动 加载到JVM）
+
+           a）代码实现（利用Java反射和类加载机制往DriverManager中注册了驱动包）
+
+                Class<?> aClass = Class.forName("com.mysql.jdbc.Driver");
+
+                - 通过Debug分析 Class.forName底层：
+                    Class.forName("com.mysql.jdbc.Driver") 会触发类加载，底层的 静态代码块会执行一次，
+                    实现加载mysql数据库驱动类，加载成功后，将Driver类的实例注册到DriverManager类中，完成注册驱动
+
+                    static {
+                        try {
+                            DriverManager.registerDriver(new Driver());
+                        } catch (SQLException var1) {
+                            throw new RuntimeException("Can't register driver!");
+                        }
+                    }
+
+
+        2) 获取连接
+
+            a）要连接数据库，需要向java.sql.DriverManager 请求并获得 Connection对象，
+                获取到的Connection对象 就代表一个数据库的连接
+
+            b）代码实现：Connection connection = DriverManager.getConnection(url, user, password);
+
+
+    2. 创建Statement（Connection接口）
+
+        1）要执行sql语句，必须获得 java.sql.Statement 实例
+
+        2）java.sql.Statement 实例 分以下三种类型
+            a）Statement：执行静态sql语句语句，存在sql注入问题
+            b）PreparedStatement：执行动态sql语句，
+            c）CallableStatement：执行数据库存储过程
+
+        3）代码实现
+           Statement Statement = con.createStatement();
+           PreparedStatement prepareStatement = con.prepareStatement(sql);
+           CallableStatement prepareCall = con.prepareCall("{CALL demoSp(? , ?)}");
+
+    3. 执行SQL语句（Statement接口、PreparedStatement接口）
+
+        1）使用Statement接口实现类来执行SQL语句
+            a）Statement对象 用于执行 静态SQL语句 并返回其生成的结果的对象
+            b）Statement对象 执行SQL语句，存在SQL注入风险（因为它执行的sql语句是利用字符串拼接方式编写的，是静态的）
+            c）SQL注入 是利用某些系统没有对用户输入的数据进行充分的检查，而在用户输入数据中注入非法的SQL语句段或命令，恶意攻击数据库
+                - 在Navicat中演示【admin】
+                - 在idea中演示【Statement_】
+            d）代码实现：
+                int rows = statement.executeUpdate(sql);
+                ResultSet resultSet = statement.executeQuery(sql);
+
+        2）使用PreparedStatement接口 实现类 来执行SQL语句
+            a）PreparedStatement对象 用于执行 动态sql语句 并返回其生成的结果的对象
+            b）PreparedStatement 执行的 SQL语句 通过占位符(?)的方式编写
+            c）preparedStatement.setXxx(占位符索引,值) 给占位符赋值  // Xxx 表示值的类型，占位符索引起始值为1
+
+            d）代码实现：
+                - preparedStatement.setXxx(占位符索引,值)  //给占位符赋值
+                - int rows = preparedStatement.executeUpdate(); //执行dml语句
+                - ResultSet resultSet = preparedStatement.executeQuery(); //执行dql语句
+
+            e）关于预编译的解读
+                - 只使用PreparedStatement无法使用预编译功能，因为mysql默认不开启预编译，需要连接db时添加
+                    useServerPrepStatements=true参数，例如 url=jdbc:mysql://127.0.0.1:3306/user?useServerPrepStatements=true
+                - 使用预编译时，jdbc将SQL语句发送给Mysql进行预编译，此时编译通过的SQL语句就会被Mysql给缓存起来,
+                    并生成一个唯一的Statement ID并返回给jdbc,下次需要执行这个SQL语句时，程序将需要执行的SQL语句的Statement
+                    ID和参数传给MySql，MySQL就会执行对应的SQL语句,即不需要再次编译，提高效率
+
+            e）预处理的好处
+                1）不在使用 + 拼接sql语句，提高代码的可读性，可维护性
+                2）有效解决了sql注入的问题
+                3）大大减少了编译次数，提高效率
+
+            演示使用 PreparedStatement 解决sql注入问题（使用select语句）【PreparedStatement_】
+            演示使用 PreparedStatement 操作（增删改）admin表【PreparedStatement01】
+
+    4. 结果处理（ResultSet接口）
+
+        1）执行dml语句：返回的是本次操作影响到的记录数
+        2）执行dql语句：返回的结果是一个ResultSet对象
+
+        3）ResultSet接口(结果集)
+            a）表示数据库结果集的数据表，通常通过执行 查询数据库 的语句生成
+            b）ResultSet对象 保持一个光标指向其当前的数据行。最初，光标位于第一行之前
+            c）resultSet.next() 将光标移动到下一行，并且由于在ResultSet对象中没有更多行时返回false，
+            d）可以在while福环中使用循环来遍历结果集：
+                while (resultSet.next()){
+                            int id = resultSet.getInt(1); //获取该行 第一列（id） 的数据
+                            String name = resultSet.getString(2); //获取该行 第二列（name） 的数据
+                            System.out.println(id + "\t" + name);
+                }
+
+            e）ResultSet对象底层结构
+                1）resultSet 是一个接口 对应的数据库厂商实现了这个接口  类型为：JDBC42ResultSet
+                2）存储数据的位置为：
+                   resultSet -> rowData -> rows(所有行，是一个ArrayList集合) -> elementData(对象数组) -> 0、1、2...(各行数据) ->
+                   inernalRowData(所有列，byte数组) -> 0、1、2..(各列数据) -> 每列数据都是以字符形式存储
+
+            演示 执行select语句 返回 ResultSet结果集 【ResultSet_】
+
+    5. 关闭JDBC对象
+        操作完成以后要把所有使用的JDBC对象全都关闭，以释放JDBC资源，关闭顺序和连接顺序刚好相反
+        (1)关闭记录集 resultSet.close
+        (2)关闭声明 preparedStatement.close
+        (3)关闭连接对象 connection.close
+
+
+总结一下上面学习的 JDBC API
+
+    1） DriverManager驱动管理类
+            - DriverManager.getConnection(url, user, password) 获取连接
+    2） Connection接口
+            - connection.createStatement(sql) 创建 Statement对象
+            - connection.prepareStatement(sql) 生产预处理对象
+    3） Statement接口
+            - executeUpdate(sql) 执行dml语句，返回影响的行数
+            - executeQuery(sql) 执行select，返回ResultSet对象
+            - execute(sql) 执行任意sql语句，返回布尔值
+    4） PrepareStatement接口
+            - setXXX(占位符索引, 占位符的值) 给sql语句中的占位符赋值，解决sql注入问题
+            - setObject(占位符索引, 占位符的值) 按对象的方式 赋值
+            - executeUpdate() 执行dml语句，返回影响的行数
+            - executeQuery() 执行select，返回ResultSet对象
+            - execute() 执行任意sql语句，返回布尔值
+    5） ResultSet接口
+            - next() 向下移动一行（起始位置指向第一行之前，即第一次移动后指向第一行），如果没有下一行 返回false
+            - previous() 向上移动 如果没有上一行 返回false
+            - getXxx(列的索引 | 列名) 获取相应的值, 接收类型为XXX
+            - getObject(列的索引 | 列名) 获取相应的值, 接收类型为Object
+
+JDBC的基本使用学习完了，接下来就是，优化使用JDBC了 ======================================================================
+
+封装JDBCUtils【utils】--------------------------------------------------------------------------------------------
+
+    说明：在Jdbc操作中，获取连接、释放资源 是经常使用到的，我们可以将其封装Jdbc连接的工具类JDBCUtils
+
+    代码实现【JDBCUtils】
+        1）定义相关静态属性（url, user, password, driver）
+        2）属性初始化
+        3）编写 获取连接 方法
+        4）编写 关闭资源 方法
+
+    使用 JDBCUtils 操作actor表【JDBCUtils_USE】
+        1） 注册驱动
+        2） 获取连接
+        3） 组织sql语句
+        4） 得到preparedStatement
+        5） 给占位符赋值
+        6） 执行sql语句
+        7） 关闭相关资源
+
+事务【transaction】-------------------------------------------------------------------------------------------------
+
+    基本介绍
+        1）JDBC程序中当一个Connection对象创建时，默认情况下是自动提交事务
+        2）每次执行一个 SQL语句时，如果执行成功，就会向数据库自动提交，而不能回滚
+        3）JDBC程序中为了让多个SQL语句作为一个整体执行，需要使用事务
+        4）connection.setAutoCommit(false）可以取消自动提交事务
+        5）connection.commit() 在所有的 SQL语句都成功执行后 提交事务
+        6）connection.rollback() 在其中某个操作失败或出现异常时 回滚事务
+
+    应用实例：模拟转账业务【Transaction_】
+
+批处理【batch_】----------------------------------------------------------------------------------------------------
+
+    基本介绍
+        1）当需要成批插入或者更新记录时。可以采用Java的批量更新机制，
+            这一机制允许多条语行一次性提交给数据库批量处理。通常情洗下比单独提交处理更有效率。
+        2）JDBC的批量处理语句包括下面方法：
+            addBatch()：添加需要批量处理的SQL语句或参数
+            executeBatch()：执行批量处理语句;
+            clearBatch()：清空批处理包的语句
+        3）JDBC连接MySQL时，如果要使用批处理功能，请再url中加参数 ?rewriteBatchedStatements=true
+        4）批处理往往和PreparedStatement一起搭配使用，可以既减少编译次数，又减少运行次数，效率大大提高
+
+    批处理底层原理：
+        第一次添加会创建一个 batchedArgs（ArrayList）,这个集合里有一个elementDate（Object[]）
+        然后 检查sql语句中占位符上填写的数据，以及一些预编译的工作，再将sql语句添加到batchedArgs的elementDate中
+        当elementDate 满后 按1.5倍扩容，当添加到指定值后，就执行批量处理
+
+    作用
+        前期的代码在与数据库进行通信时，都是先建立连接，建立连接花费的成本是最高的，然后发一个SQL语句，执行完后就关闭了连接。
+        另外, 发送的SQL语句都是通过网络传送的，比起本地调用来说，网络传输的成本也是高很多的。如果要插入或者更新一批数据进数据库，
+        还是采用前期的方法，花费的时间会很多，给用户的感受会很慢。但是如果采用批处理，则在两个方便都会节约大部分成本，速度会更快。
+
+    应用案例【Batch_】
+
+数据库连接池【datasource】-------------------------------------------------------------------------------------
+
+一、JDBC数据库连接池的必要性
+
+    1. 引出【ConQuestion】
+        1）使用传统方法完成连接mysql数据库5000次，发现问题
+        2）引出 数据库连接池
+
+    2. 为什么需要数据库连接池
+        1）传统的JDBC数据库连接使用 DriverManager 来获取，每次向数据库建立 连接的时候都要将 Connection 加载到内存中，
+            再验证IP地址、用户名、密码(0.05s ~ 1s时间)。需要数据库连接的时候，就向数据库请求一个连接，
+            频繁的进行数据库连接操作将占用很多的系统资源，容易造成服务器崩溃。
+        2）每一次数据库连接使用完后都得断开，如果程序出现异常而未能关闭，将导致数据库内存池漏，最终将导致重启数据库.
+        3）传统获取连接的方式，不能控制创建的连接数量，如连接过多，也可能导致内存泄漏， MySQL崩溃。
+        4）解決传统开发中的数据库连接问题，可以采用数据库连接池技术(connection pool)
+
+二、数据库连接池技术
+
+    1. 基本介绍
+        1）预先在缓冲池中放入一定数量的连接，当需要建立连接时，只需从"缓冲池"中取出一个，使用完毕之后再放回去，而不是直接关闭
+        2）数据库连接池负责分配、管理和释放数据库连接，它允许应用程序重复使用一个现有的数据库连接，而不是重新建立一个
+        3）当应用程序向连接池请求的连接数超过最大连接数量时，这些请求将被加入到等待列中
+
+    2. 数据库连接池的优点
+        1）资源重用
+        2）更快的系统反应速度
+        3）新的资源分配手段
+        4）统一的连接管理，避免数据库连接泄露
+
+三、多种开源的数据库连接池
+
+    1. JDBC 的数据库连接池使用 javax.sql.DataSource 来表示，DataSource只是一个接口，
+       该接口通常由第三方提供实现，也有一些开源的组织提供实现：
+
+        1）C3P0：速度相对慢，稳定性不错 (hibernate, spring)
+        2）DBCP：速度相对c3p0较快，但不稳定
+        3）Proxool：有监控连接池状态的功能，稳定性较c3p0差一点
+        4）BoneCP：速度快
+        5）Druid(德鲁伊)：是阿里提供的数据库连接池，集DBCP、C3PO、Proxool 优点于一身的数据库连接池
+
+        注意：不同的数据库连接池 就是不同方式的实现了DataSource接口
+          这就可以解释为什么： 原先的close()都是关闭连接，而在数据库连接池中，close()只是将连接放回到连接池中，并没有关闭连接
+                        因为他们的实现类不一样
+
+    2. DataSource 通常被称为数据源，它包含连接池和连接池管理两个部分，习惯上也经常把 DataSource 称为连接池
+
+    3. DataSource用来取代DriverManager来获取Connection，获取速度快，同时可以大幅度提高数据库访问速度。
+        （1）数据源和数据库连接不同，数据源无需创建多个，它是产生数据库连接的工厂，因此整个应用只需要一个数据源即可。
+        （2）当数据库访问结束后，程序还是像以前一样关闭数据库连接：conn.close();
+             但conn.close()并没有关闭数据库的物理连接，它仅仅把数据库连接释放，归还给了数据库连接池。
+
+    4. 使用C3P0连接池 连接数据库【C3P0_】
+        //使用C3P0连接池，首先导入相应的jar包（c3p0-0.9.1.2.jar）
+        方式一：相关参数，在程序中指定user、url、password、driver等
+        方式二：使用配置文件模板来完成（c3p0-config.xml）
+
+    5. 使用Druid连接池 连接数据库
+        //使用Druid连接池 首先导入相应的jar包（druid-1.1.10.jar）
+        1）案例演示【Druid_】
+        2）编写 基于 Druid数据连接池 的工具类【JDBCUtilsByDruid】
+        3）演示使用工具类 查询数据库 【JDBCUtilsByDruid_USE】
+
+DBUtils【dbutils】-------------------------------------------------------------------------------------------------
+
+一、DBUtils的必要性
+
+    1. 先分析一个问题
+        1）关闭connection后（放回连接池），resultSet结果集无法使用
+        2）resultSet 可能需要复用，即不利于数据的管理
+        3）怎么解决？ 看图分析【ApDBUtils引出】
+
+    2. 先使用自己的方法 + Druid连接池，解决上面问题【ImitationDBUtils】
+        1）创建一个Actor类（Javabean、Domain、Pojo），将ResultSet中的数据封装到该类，一条记录对应一个actor对象
+        2）将actor 放到 ArrayList集合中
+        3）封装完成后，就可以随意使用这些记录了，就不会因为关闭了连接而不能使用这些记录
+        本质： 将ResultSet --封装到-->ArrayList
+
+二、DBUtils的应用
+
+    1. DBUtils基本介绍
+        1）commons-dbutils 是Apache组织提供的一个开源 JDBC工具类库，它是对JDBC的封装，使用dbutils能极大简化jdbc编码的工作量。
+
+    2.DBUtils三个核心功能介绍
+
+        1）QueryRunner类：该类封装了SQL的执行，是线程安全的。可以实现 增、删、改、查、批处理
+
+        2）ResultSetHandler结果集 接口：该接口用子处理 java.sql.ResultSet，将数据按要求转换为另一种形式，它的实现类有：
+
+            - ArrayHandler：把结果集中的第一行数据转成对象数组。
+            - ArrayListHandler：把结果集中的每一行数据都转成一个数组，再存放到List中。
+            - BeanHandler：将结果集中的第一行数据封装到一个对应的JavaBean实例中，
+            - BeanListHandler：将结果集中的每一行数据都封装到一个对应的JavaBean实例中，存放到List里。
+            - ColumnListHandler：将结果集中某一列的数据存放到List中。
+            - KeyedHandler(name)：将结果集中的每行数据都封装到Map里，再把这些map再存到一个map里，其key为指定的key。
+            - MapHandler：将结果集中的第一行数据封装到一个Map里，key是列名，value就是对应的值。
+            - MapListHandler：将结果集中的每一行数据都封装到一个Map里，然后再存放到List
+
+        3）DbUtils类：一个工具类，定义了关闭资源与事务处理的方法。
+
+    3. JavaBean（Domain、Pojo）
+
+        就是一个类，再开发中常用于封装数据，具有如下特点：
+            1）需要实现接口：java.io.Serializable，通常实现接口这部省略了，不会影响程序
+            2）提供私有字段：private int id;
+            3）提供无参构造器（反射需要，这一点非常重要）
+            4）提供 get、set 方法
+
+        比如Actor类，它将actor数据库表的字段定义为私有属性，用于操作actor数据库表 得到的ResultSet对象
+        封装到 actor对象中，一条记录代表一个actor对象，再将这些对象放到一个ArrayList集合中管理
+
+    4. 案例演示【UseDBUtils】
+
+        //使用 DBUtils工具类，先引入的jar（commons-dbutils-1.3.jar），加入到项目中
+
+        1） 使用apache-DBUtils 工具类 + Druid连接池 完成对表的查询操作（查询 多条记录）
+            List<Actor> list = queryRunner.query(connection, sql, new BeanListHandler<>(Actor.class), param...);
+
+        2） 使用apache-DBUtils 工具类 + Druid连接池 完成对表的查询操作（查询 单行记录）
+            Actor actor = queryRunner.query(connection, sql, new BeanHandler<>(Actor.class), param...);
+
+        3） 使用apache-DBUtils 工具类 + Druid连接池 完成对表的查询操作（查询 单行单列）
+            Object o = queryRunner.query(connection, sql, new ScalarHandler(), param...);
+
+        4） 使用apache-DBUtils 工具类 + Druid连接池 完成对表的增删改操作
+            int rows = queryRunner.update(connection, sql, param...);
+
+DAO和增删改查通用方法—BasicDao-------------------------------------------------------------------------------------------
+
+一、DAO的必要性
+
+    1. 先分析一个问题
+        apache-dbutils + Druid 简化了JDBC开发，但还有不足：
+        1）SQL语句是固定，不能通过参加数传入，通用性不好，需要进行改造，更方便执行 增删改查
+        2）对于select操作，如果有返回值，返回类型不能固定，需要使用泛型
+        3）将来的表很多，业务需求复杂不可能只靠一个Java完成
+        4）引出 ==> BasicDAO 画出示意图【BasicDAO原理图】
+
+二、DAO的应用
+
+    基本说明
+        1）DAO（data access object）：数据访问对象
+        2）这种通常类，称为BasicDao，是专门和数据库交互的，即完成对数据库(表)的crud操作
+        3）在BasicDao的基础上，实现一张表，对应一个Dao，更好的完成功能
+           比如 Customer表 --对应--> Customer.java类(javabean) --对应--> CustomerDao.java
+
+    BasicDAO应用实例
+
+        完成一个简单设计：
+            创建一个包 dao_ 再创建3个子包
+                1）dao_.utils        //存放工具类
+                2）dao_.domain       //存放javabean
+                3）dao_.dao          //存放XxxDAO 和 BasicDAO
+                4）dao_.test         //存放测试类
+
+
+
+
+
+

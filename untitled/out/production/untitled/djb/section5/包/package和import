@@ -1,0 +1,13 @@
+package
+    package出现在java源文件的第一行
+    带有包名怎么编译？ java -d . xxx. java
+    怎么运行？ java 完整类名
+
+import
+    import什么时候不需要
+        java.lang不需要
+        同包下不需要
+        其他一律需要
+    怎么用
+        import 完整类名 ;
+        import 包名.* ;

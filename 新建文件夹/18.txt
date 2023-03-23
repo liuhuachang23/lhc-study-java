@@ -1,0 +1,286 @@
+                                    IO
+
+一、文件 【package hsp.chapter18.file;】
+    1. 文件在程序中是以流的形式来操作的
+
+    流: 数据在数据源(文件)和程序(内存)之间经历的路径
+    输入流:数据从数据源(文件)到程序(内存)的路径
+    输出流:数据从程序(内存)到数据源(文件)的路径
+
+    2.  创建文件
+
+    第一步： 创建文件对象相关构造器
+        1) new File(String pathname) //根据路径构建一个File对象
+        2) new File(File parent, String child) //根据 父目录文件 + 子路径 构建
+        3) new File(String parent, String child) //根据 父目录文件路径 + 子路径 构建
+        //这里file对象,在java程序中,只是一个对象
+        //只有执行了 createNewFile() / mkdirs() 才会真正的在磁盘创建该文件
+    第二步 创建文件的方法
+        1) mkdir 创建一级目录（mkdirs创建多级目录）
+        2) createNewFile 创建新文件
+
+    补充说明：目录（目录文件）就相当于文件夹, 也属于文件
+
+    3. 获取文件相关的信息
+
+    1) getName 获取文件名
+    2) getAbsolutePath 获取文件绝对路径
+    3) getParent 获取文件父级目录
+    4) length 获取文件大小(字节)
+    5) exists 文件是否存在
+    6) isFile 是否为非目录文件
+    7) isDirectory 是否为目录文件
+
+    4. 删除文件
+    delete 删除文件或空白目录(如果目录下面存在 文件或子目录 就不能删除）
+
+
+二、IO流原理：
+    1） I/O 是 Input/Output的缩写, I/O技术是非常实用的技术，用于处理数据传输。
+    2） Java程序中，对与数据的输入/输出操作以"流(Stream)"的方式进行
+    3） java.io包下提供了各种"流"类和接口，用以获取不同种类的数据，并通过方法输入/输出数据
+    4） 输入input：读取外部数据（磁盘，光盘等存储设备）到程序中
+    5） 输入output：将程序数据输出到磁盘，光盘等存储设备中
+
+三、流的分类
+    1） 按操作数据单位：字节流(8 bit)二进制文件（可以处理一切数据）、字符流(按字符)文本文件（处理纯文本）
+    2） 按数据流的流向：输入流、输出流
+    3） 按流的角色：节点流、处理流/包装流
+
+    ------------------------------------------------
+    | 4种抽象基类  |    字节流      |     字符流      |
+    ------------------------------------------------
+    |   输入流    |  InputStream   |    Reader      |
+    ------------------------------------------------
+    |   输出流    |  OutputStream  |    Writer      |
+    ------------------------------------------------
+
+    1）java的IO流共涉及40多个类，实际上非常规则，都是从如上4个抽象基类派生的
+    2）由这4个类派生出来的子类名称都是以其父类名作为子类名后缀
+
+ 1. InputStream 字节输入流
+    1） InputStream抽象类是所有类 字节输入流 的超类
+    2） 常用类的子类（上为节点流 下为处理流）
+        fileInputStream           字节文件输入流
+
+        BufferedInputStream       缓冲字节输入流
+        ObjectInputStream         对象字节输入流
+
+ 2. OutputStream 字节输出流
+    1） OutputStream抽象类是所有类 字节输出流 的超类
+    2） 常用类的子类（上为节点流 下为处理流）
+        fileOutputStream          字节文件输出流
+
+        BufferedOutputStream      缓冲字节输出流
+        ObjectOutputStream        对象字节输出流
+        PrintStream               打印流
+
+ 3. Reader 字符输入流
+    1） Reader抽象类是所有类 字符输入流 的超类
+    2） 常用类的子类（上为节点流 下为处理流）
+        FileReader                字符文件输入流
+
+        BufferedReader            缓冲字符输入流
+        InputStreamReader         转换输入流（反序列化）
+
+ 4. Writer 字符输出流
+    1） Writer抽象类是所有类字符输出流的超类
+    2） 常用类的子类（上为节点流 下为处理流）
+        FileWriter                字符文件输出流
+
+        BufferedWriter            缓冲字符输出流
+        OutputStreamWriter        转换输出流（序列化）
+        PrintWriter               打印流
+
+四、字节流和字符流：
+
+    1）字节流与字符流：
+        字节流和字符流的用法几乎完成全一样，区别在于字节流和字符流所操作的数据单元不同，
+        字节流操作的单元是数据单元是8位的字节，字符流操作的是数据单元为16位的字符。
+
+    2）为什么要有字符流？
+        Java中字符是采用Unicode标准，Unicode 编码中，一个英文字母或一个中文汉字为两个字节。
+        而在UTF-8编码中，一个中文字符是3个字节。那么问题来了，如果使用字节流处理中文，
+        如果一次读写一个字符对应的字节数就不会有问题，一旦将一个字符对应的字节分裂开来，就会出现乱码了。
+        为了更方便地处理中文这些字符，Java就推出了字符流。
+
+    3）字节流和字符流的其他区别：
+        - 字节流一般用来处理图像、视频、音频、PPT、Word等类型的文件。字符流一般用于处理纯文本类型的文件，如TXT文件等，
+          但不能处理图像视频等非文本文件。（字节流可以处理一切文件，而字符流只能处理纯文本文件）
+        - 字节流本身没有缓冲区，缓冲字节流相对 于字节流效率提升非常高。而字符流本身就带有缓冲区，
+          缓冲字符流相对于字符流效率提升就不是那么大了。
+
+
+五、 节点流和处理流基本介绍
+        1）节点流 可以从一个 特定的数据源 读写数据（如 FileReader、FileWriter）
+
+        2）处理流 是 "连接" 在已存在的流（节点流或处理流）之上，为程序提供 更为强大、灵活的读写功能
+          （如 BufferedReader、BufferedWriter）
+
+                以 BufferedReader源码来解析（其他处理流同理）：
+                BufferedReader继承了Reader，并且定义了一个Reader属性，即可以封装一个Reader子类
+                所以只要是Reader的子类，都可以传入到BufferedReader里面（多态）
+                /*
+                public class BufferedReader extends Reader {
+                    private Reader in;
+                    private char cb[];
+                */
+
+     节点流和处理流的区别和联系
+        1）节点流是底层流/低级流，直接跟数据源相接
+        2）处理流包装节点流，既可以消除不同节点流的实现差异，也可以提供更方便的方法来完成输入输出
+        3）处理流对节点流进行包装，使用了 修饰器模式，不会直接与数据源相连
+
+     处理流的功能主要体现在以下两个方面
+        1）性能的提高：主要以增加缓冲的方式来提高输入输出的效率
+        2）操作的便捷：处理流可能提供了一系列便捷的方法来一次输入大批量的数据，使用更加灵活方便
+
+六、常用处理流
+
+  1. 缓冲流 （上面介绍处理流就是以这个为例）
+
+  2. 对象流 ObjectInputStream 和 ObjectOutputStream  (都是处理流)
+     ObjectInputStream 提供 反序列化功能
+     ObjectOutputStream 提供 序列化功能
+     可以将 基本数据类型 或 对象 进行 序列化 和 反序列化
+
+    序列化和反序列化
+        1） 序列化：保存数据时，会保存数据的 值和数据类型 (二进制形式 保存的，所以在文件中看到的是乱码)
+        2） 反序列化： 恢复数据时，恢复数据的 值和数据类型
+
+        3） 需要让某个对象支持序列化和反序列化，则必须让其类是可序列化的，
+            为了让某个类是可序列化，该类必须实现以下两个接口之一；
+            Serializable  //这是一个标记接口，没有需要实现的方法，所以更常用
+            Externalizable
+
+        4）序列化对象时 要求里面属性的类型也需要实现序列化接口（要求里面的属性都是可序列化的）
+            - 属性是基本数据类型，会自动装箱成其对应的包装类型（实现了Serializable接口）
+            - 属性是某个对象的引用，需要手动给这个对象实现序列化接口
+            - 属性是数组，要求里面的元素实现序列化接口
+            - static或transient修饰的成员不能被序列化，不要求可序列化
+
+        5）序列化对象时，默认将里面所有 可序列化的 属性都进行了序列化
+        6）序列化对象时，如果发现存在属性没有被序列化 在对这个对象进行序列化和反序列化，会认为该对象不可序列化 而抛出异常
+
+        7）反序列化对象时必须要提供该对象的字节码文件.class
+           或者 把 我们将需要反序列化的对象,放在一个可以引用的到的位置 即可
+
+
+    注意事项和细节说明
+        1） 读写顺序一致
+        2） 要求实现序列化或反序列化对象， 需要实现 Serializable
+
+        3） 序列化的类中建议添加 SerialVersionUID(版本号)，序列化时为了保持版本的兼容性，即在版本升级时反序列化仍保持对象的唯一性。
+            （如：在更改对象属性后然编译器认为还是同一个对象）
+            有两种生成方式：
+                   - 默认的1L
+                        比如：private static final long serialVersionUID = 1L; (例题中的Dog类,使用了)
+                   - 根据类名、接口名、成员方法及属性等来生成一个64位的哈希字段，
+                        比如：private static final long serialVersionUID = xxxL;
+
+        4） 序列化对象时，默认将里面所有的属性都进行了序列化，但是除了static或transient修饰的成员
+        5） 序列化对象时 要求里面属性的类型也需要实现序列化接口
+        6） 序列化具备可继承性，一个类实现了序列化，则他的所有子类也默认实现序列化
+
+        7） 在序列化的过程中，由于有些属性值比较敏感(例如密码)，或者有些属性值的信息量比较大，
+            他们不需要在网络中传递活在磁盘中储存，即不需要参与序列化。对于此类属性只需要在定义时为其添加
+            transient关键字即可，对于transient属性序列化机制会跳过而不会将其写入文件，但在读取时也不可恢复，
+            该属性值保持默认初始化值；
+
+  3. 标准输入流和标准输出流
+        1）System.in 表示标准输入 默认设备为键盘
+            Stream类 的 public final static InputStream in = null;
+            System.in 编译类型 InputStream
+            System.in 运行类型 BufferedInputStream
+
+            标准输入流案例:
+            传统方法: Scanner 就是从标准输入键盘接收数据
+
+        2）System.out 表示标准输出 默认设备为显示器
+            Stream类 的 public final static PrintStream out = null;
+            System.out 编译类型 PrintStream
+            System.out 运行类型 PrintStream
+
+           标准输出流案例:
+           传统方法: System.out.println("")方法就是使用 out对象 将数据输出到显示器
+
+  4. 转换流 InputStreamReader 和 OutputStreamWriter
+        1） InputStreamReader：Reader的子类，可以将InputStream(字节流) 包装成Reader(字符流)
+        2） OutputStreamWriter：Writer的子类，可以将OutputStream(字节流) 包装成Writer(字符流)
+        3） 当处理纯文本数据时，如果使用字符流效率更高，并且可以有效解决中文问题，所以建议将字节流转换成字符流
+        4） 可以在使用时指定编码格式（比如 utf-8，gbk，gb2312，ISO8859-1）
+
+
+  5. 打印流 PrintStream 和 PrintWriter
+       1） 打印流只有输出流，没有输入流
+
+  6、properties类
+
+       1） 专门用于读写配置文件的集合类
+            配置文件的格式
+            键=值
+
+       2） 注意：键值对不需要有空格，值不需要用引用括起来，默认是String类型
+
+       3）properties的常用方法
+            - load 加载配置文件的键值对到Properties对象
+            - list 将数据显示到指定设备
+            - get 根据k 获取 k-v (Object)
+            - getProperty(key) 根据键获取值
+            - setProperty(key,value) 设置键值对到Properties对象
+            - store 将 Properties 中的键值对存储到配置文件，在idea中，保存信息到配置文件
+                    如果含有中文，会存储其对应的Unicode码
+
+
+  五、文件拷贝
+
+        1、使用字节流（InputStream和OutputStream）的实现子类去拷贝
+            以下两种本章有演示：
+            1）FileInputStream 和 FileOutputStream （节点流）
+            2）BufferedInputStream 和 BufferedOutputStream （处理流）
+
+            注意：字节流可以操作一切数据，包括 二进制文件、文本文件（中文字符也行）
+
+        2、使用字符流（Reader和Writer）的实现子类去拷贝拷贝
+            以下两种本章有演示：
+            1）fileReader 和 fileWriter （节点流）
+            2）BufferReader 和 BufferWriter （处理流）
+
+            注意：字符流不能处理 二进制文件( 声音,视频,doc,pdf .等 )
+
+  六、刷新和关闭流文件
+
+            1）flush(); //刷新
+            2）close(); //关闭（flush + close）
+
+        为什么需要关闭流
+            当我们创建一个java流对象之后，不仅在计算机内存中创建了一个相应类的实例对象。
+            而且，还占用了相应的系统资源，比如：文件句柄、端口、数据库连接等。在内存中的实例对象，
+            当没有引用指向的时候，java垃圾收集器会按照相应的策略自动回收，但是却无法对系统资源进行释放。
+            所以，我们需要主动调用close()方法释放java流对象。
+            在java7之后，可以使用try-with-resources语句来释放java流对象，从而避免了try-catch-finally语句的繁
+
+        IO流中刷新和关闭的区别
+
+            1）flush()：因为内置缓冲区的原因，如果不关闭输出流，无法写出字符到文件中，但是关闭的流对象，是无法继续
+                写出数据的，如果我们既想写出数据，又想继续使用流，就需要使用flush()流，刷新缓冲区，对象可以继续使用
+            2）close() ： 先刷新缓冲区，然后通知系统释放资源，流对象不可以再被使用了
+
+
+            Writer类 一定要记得关闭流 才会输出数据，close里面才是真正写数据的！！！
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

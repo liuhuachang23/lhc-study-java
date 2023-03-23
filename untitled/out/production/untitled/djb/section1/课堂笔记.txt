@@ -1,0 +1,108 @@
+第一章 认识java
+
+1.DOS命令
+ * 打开方式: win+r 输入cmd 回车
+ * 常见的dos命令
+   - exit 退出当前命令窗口
+   - cls 清屏
+   - dir 列出当前命令下的子文件
+   - cd 命令
+    * cd命令表示: change directory (改变目录)
+    * cd 命令用法:
+      cd 目录的路径 (绝对路径和相对路径)
+	C:\Users\刘华昌\ cd C:\Users\刘华昌\.eclipse (由原来的目录切换到后面的目录)
+	cd .. 回到上级目录
+	cd \ 直接回到根目录
+   - 怎么切换盘符
+	 c: 回车
+	 d: 回车
+2.java语言的特性 (开源 免费 纯面向对象 跨平台)
+	*简单行
+	*面向对象
+	*可移植性
+	*多线程
+	*健壮性
+	*安全性
+3.jdk jre jvm 的关系搞清楚
+
+4.jdk目录的介绍:
+	jdk/bin: 该目录下存放了很多命令, 例如 javac.exe和java.exe
+	javac.exe 负责编译
+	java.exe 负责运行
+
+5.开发HelloWorld.java源代码 (照抄, 不要问为什么, 注意大小写)
+
+    将helloWorld.java源程序通过javac工具进行编译:
+	-首先需要解决的问题是: javac命令是否可用
+	- 打开DOS命令,直接输入javac,然后回车,出现错误提示者不能使用
+        以上情况就是:windows操作系统无法找到javac命令文件
+
+	-这么解决以上javac不可用的问题
+		windows操作系统是如何搜索硬盘上某个命令的呢?
+		  * 首先会从当前目录下搜索
+		  * 从环境变量path指定的路径当中搜索某个命令
+		  * 都搜索不到就会报错
+
+	- 配置环境变量path
+	  *注意: path环境变量与java语言没有关系,path环境变量是属于windows操作系统的一个知识点.
+	  path环境变量是给windows操作系统指路的.
+	  *javac要相能够随意使用,需要将javac所在的目录配置到环境变量path中:
+	    path=.......;C:\Program Files\java\jdk1.8.0_281\bin
+
+	- javac命令怎么用?
+	  javac java源文件路径
+
+    运行java程序
+	-需要使用java.exe命令
+
+	-首先测试java命令是否可用
+
+	-使用方式:
+	 java 类名
+	 硬盘上有 HelloWorld.class  那么类名就是HelloWorld
+	 注意: java后面接的是类名 不是忘记路径
+	
+	-首先你需要将DOS窗口中的目录切换到HelloWorld.class文件所在目录.
+	
+	-然后直接执行: java HelloWorld
+
+关于java源程序当中的注释:
+
+	-单行注释
+	  // 单行注释,只注释当前行
+
+	-多行注释
+	  /*
+	     多行注释
+	     多行注释
+	     多行注释
+	     多行注释
+	     多行注释
+	  */
+
+	-javadoc注释
+	   /**
+	   *  javadoc注释
+	   *  javadoc注释
+	   *  javadoc注释
+	   */
+	 注意: javadoc注释是比较专业的注释 改注释信息会被javadoc.exe工具解析提取并生成班助文档.
+
+Public class 和class 的区别：
+	*一个java源文件当中可以定义多个class
+	*一个Java源文件当中public的class不是必须的
+	*一个class会定义生成一个xxx.class字节码文件
+	*一个java源文件当中定义公开的类的话，public的class只能有一个，并且该类名称必须和java原文件名称一致
+	*每一个class当中都可以编写main方法，都可以设定程序入口。如想执行b.class中的main方法：java B
+	*注意：当在命令窗口在执行java Hello，要求Hello。Class当中必须有主方法。，没有主方法会出现运行阶段错误：
+		错误：在类 Hello 中找不到主方法，请将定义为：
+		 Public static void main (string[] args)
+
+ 总结第一章需要掌握的内容
+ 	*理解java的加载与执行
+	*能够自己搭建java开发环境
+	*能够独立编写HelloWorld程序，编译并运行
+	*掌握还环境变量path的原理以及如何配置
+	*掌握环境变量classpath的原理以及如何配置
+	*java中的注释
+	*public class和class的区别

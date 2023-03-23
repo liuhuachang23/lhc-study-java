@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>java.io.InputStream</OriginalElement>
+  <nodes>
+    <node x="528.0" y="322.0">java.io.ObjectInputStream.ValidationList</node>
+    <node x="136.5138888888889" y="70.0">java.io.Closeable</node>
+    <node x="109.0" y="238.0">java.io.FilterInputStream</node>
+    <node x="318.50694444444446" y="133.0">java.io.ObjectInputStream.PeekInputStream</node>
+    <node x="340.0" y="238.0">java.io.ObjectInputStream</node>
+    <node x="377.0" y="322.0">java.io.ObjectInputStream.GetField</node>
+    <node x="531.0" y="133.0">java.io.ObjectInputStream.HandleTable</node>
+    <node x="222.0" y="400.0">java.io.ObjectInputStream.Caches</node>
+    <node x="99.5" y="322.0">java.io.BufferedInputStream</node>
+    <node x="300.00694444444446" y="70.0">java.io.ObjectInputStream.BlockDataInputStream</node>
+    <node x="361.5" y="400.0">java.io.ObjectInputStream.GetFieldImpl</node>
+    <node x="270.375" y="-14.0">java.lang.AutoCloseable</node>
+    <node x="538.5" y="55.0">java.io.ObjectInputStream.HandleTable.HandleList</node>
+    <node x="545.5" y="400.0">java.io.ObjectInputStream.ValidationList.Callback</node>
+    <node x="-103.0" y="238.0">java.io.FileInputStream</node>
+    <node x="127.01388888888891" y="154.0">java.io.InputStream</node>
+    <node x="558.0" y="238.0">java.io.ObjectInputStream.FilterValues</node>
+    <node x="377.0" y="470.0">java.io.ObjectInputStream.Logging</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="java.io.ObjectInputStream.HandleTable" target="java.io.ObjectInputStream" relationship="INNER_CLASS">
+      <point x="0.0" y="14.0" />
+      <point x="600.0" y="210.0" />
+      <point x="540.0" y="210.0" />
+      <point x="540.0" y="252.0" />
+      <point x="91.0" y="0.0" />
+    </edge>
+    <edge source="java.io.ObjectInputStream.ValidationList.Callback" target="java.io.ObjectInputStream.ValidationList" relationship="INNER_CLASS">
+      <point x="0.0" y="-14.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.io.ObjectInputStream.Logging" target="java.io.ObjectInputStream" relationship="INNER_CLASS">
+      <point x="54.0" y="0.0" />
+      <point x="518.0" y="484.0" />
+      <point x="518.0" y="375.0" />
+      <point x="507.0" y="375.0" />
+      <point x="507.0" y="299.5" />
+      <point x="540.0" y="299.5" />
+      <point x="540.0" y="252.0" />
+      <point x="91.0" y="0.0" />
+    </edge>
+    <edge source="java.io.ObjectInputStream.GetFieldImpl" target="java.io.ObjectInputStream.GetField" relationship="GENERALIZATION">
+      <point x="-15.0" y="-14.0" />
+      <point x="-15.0" y="14.0" />
+    </edge>
+    <edge source="java.io.ObjectInputStream.FilterValues" target="java.io.ObjectInputStream" relationship="INNER_CLASS">
+      <point x="-65.0" y="0.0" />
+      <point x="91.0" y="0.0" />
+    </edge>
+    <edge source="java.io.ObjectInputStream.HandleTable.HandleList" target="java.io.ObjectInputStream.HandleTable" relationship="INNER_CLASS">
+      <point x="0.0" y="14.0" />
+      <point x="0.0" y="-14.0" />
+    </edge>
+    <edge source="java.io.ObjectInputStream.BlockDataInputStream" target="java.io.ObjectInputStream" relationship="INNER_CLASS">
+      <point x="-101.99994444444445" y="14.0" />
+      <point x="301.007" y="210.0" />
+      <point x="540.0" y="210.0" />
+      <point x="540.0" y="252.0" />
+      <point x="91.0" y="0.0" />
+    </edge>
+    <edge source="java.io.ObjectInputStream.GetField" target="java.io.ObjectInputStream" relationship="INNER_CLASS">
+      <point x="54.0" y="0.0" />
+      <point x="507.0" y="336.0" />
+      <point x="507.0" y="299.5" />
+      <point x="540.0" y="299.5" />
+      <point x="540.0" y="252.0" />
+      <point x="91.0" y="0.0" />
+    </edge>
+    <edge source="java.io.ObjectInputStream.GetFieldImpl" target="java.io.ObjectInputStream" relationship="INNER_CLASS">
+      <point x="0.0" y="-14.0" />
+      <point x="431.0" y="375.0" />
+      <point x="507.0" y="375.0" />
+      <point x="507.0" y="299.5" />
+      <point x="540.0" y="299.5" />
+      <point x="540.0" y="252.0" />
+      <point x="91.0" y="0.0" />
+    </edge>
+    <edge source="java.io.ObjectInputStream.PeekInputStream" target="java.io.ObjectInputStream" relationship="INNER_CLASS">
+      <point x="5.5555555547925906E-5" y="14.0" />
+      <point x="403.007" y="210.0" />
+      <point x="540.0" y="210.0" />
+      <point x="540.0" y="252.0" />
+      <point x="91.0" y="0.0" />
+    </edge>
+    <edge source="java.io.ObjectInputStream.ValidationList" target="java.io.ObjectInputStream" relationship="INNER_CLASS">
+      <point x="-72.0" y="0.0" />
+      <point x="507.0" y="336.0" />
+      <point x="507.0" y="299.5" />
+      <point x="540.0" y="299.5" />
+      <point x="540.0" y="252.0" />
+      <point x="91.0" y="0.0" />
+    </edge>
+    <edge source="java.io.ObjectInputStream.Caches" target="java.io.ObjectInputStream" relationship="INNER_CLASS">
+      <point x="0.0" y="-14.0" />
+      <point x="271.0" y="375.0" />
+      <point x="507.0" y="375.0" />
+      <point x="507.0" y="299.5" />
+      <point x="540.0" y="299.5" />
+      <point x="540.0" y="252.0" />
+      <point x="91.0" y="0.0" />
+    </edge>
+    <edge source="java.io.ObjectInputStream.PeekInputStream" target="java.io.InputStream" relationship="GENERALIZATION">
+      <point x="-84.49994444444445" y="0.0" />
+      <point x="282.0" y="147.0" />
+      <point x="282.0" y="168.0" />
+      <point x="68.0001111111111" y="0.0" />
+    </edge>
+    <edge source="java.io.ObjectInputStream.BlockDataInputStream" target="java.io.InputStream" relationship="GENERALIZATION">
+      <point x="-102.99994444444445" y="0.0" />
+      <point x="282.0" y="84.0" />
+      <point x="282.0" y="168.0" />
+      <point x="68.0001111111111" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.0" showDependencies="false" x="585.5" y="306.0" />
+  <SelectedNodes>
+    <node>java.io.InputStream</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
